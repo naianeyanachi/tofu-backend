@@ -13,27 +13,13 @@ services:
     ports:
         - "5433:5432" # Exposing Postgres on different port for convenience
     environment:
-        POSTGRES_DB: "orders"
+        POSTGRES_DB: "tofu_cart"
         POSTGRES_PASSWORD: "password"
         POSTGRES_USER: "postgres"
     restart: always
 
-  redis:
-    container_name: nameko-example-redis
-    image: redis
-    ports:
-        - "6380:6379" # Exposing Redis on different port for convenience
-    command: [
-      "bash", "-c",
-      '
-       docker-entrypoint.sh
-       --requirepass password
-      '
-    ]
-    restart: always
-
-  orders:
-    container_name: nameko-example-orders
+  carts:
+    container_name: tofu-carts
     depends_on:
       - rabbit
       - postgres
@@ -46,43 +32,17 @@ services:
         DB_PASSWORD: "password"
         DB_USER: "postgres"
         DB_HOST: "postgres"
-        DB_NAME: "orders"
+        DB_NAME: "tofu_cart"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"
         RABBIT_PORT: "5672"
         RABBIT_MANAGEMENT_PORT: "15672"
     build:
-        context: ./orders
+        context: ./carts
         dockerfile: Dockerfile
     volumes:
-        - ./orders:/application
-
-  products:
-    container_name: nameko-example-products
-    depends_on:
-      - rabbit
-      - redis
-    ports:
-        - "8002:8000"
-    links:
-        - "rabbit:nameko-example-rabbitmq"
-        - "redis:nameko-example-redis"
-    environment:
-        REDIS_HOST: "redis"
-        REDIS_PORT: "6379"
-        REDIS_INDEX: "11"
-        REDIS_PASSWORD: "password"
-        RABBIT_PASSWORD: "guest"
-        RABBIT_USER: "guest"
-        RABBIT_HOST: "rabbit"
-        RABBIT_PORT: "5672"
-        RABBIT_MANAGEMENT_PORT: "15672"
-    build:
-        context: ./products
-        dockerfile: Dockerfile
-    volumes:
-        - ./products:/application
+        - ./carts:/application
 
   gateway:
     container_name: nameko-example-gateway

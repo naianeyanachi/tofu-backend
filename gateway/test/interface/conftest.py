@@ -79,5 +79,5 @@ def create_service_meta(container_factory, test_config):
 @pytest.fixture
 def gateway_service(create_service_meta):
     """ Gateway service test instance with mocked `products_rpc` and
-    `orders_rpc` dependencies """
-    return create_service_meta('products_rpc', 'orders_rpc')
+    `carts_rpc` dependencies """
+    return create_service_meta('products_rpc', 'carts_rpc')

@@ -6,8 +6,7 @@ omit =
         */setup.py
 
 source =
-	products/products
-	orders/orders
+	carts/carts
 	gateway/gateway
 
 [html]

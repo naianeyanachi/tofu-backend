@@ -1,10 +1,9 @@
 HTMLCOV_DIR ?= htmlcov
 TAG ?= dev
-IMAGES := orders products gateway
+IMAGES := carts gateway
 
 install-dependencies:
-	pip install -U -e "orders/.[dev]"
-	pip install -U -e "products/.[dev]"
+	pip install -U -e "carts/.[dev]"
 	pip install -U -e "gateway/.[dev]"
 
 # test
@@ -16,10 +15,9 @@ coverage-report:
 	coverage report -m
 
 test:
-	flake8 orders products gateway
+	flake8 carts gateway
 	coverage run -m pytest gateway/test $(ARGS)
-	coverage run --append -m pytest orders/test $(ARGS)
-	coverage run --append -m pytest products/test $(ARGS)
+	coverage run --append -m pytest carts/test $(ARGS)
 
 coverage: test coverage-report coverage-html
 

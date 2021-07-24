@@ -5,7 +5,7 @@ from nameko.exceptions import safe_for_serialization, BadRequest
 from nameko.web.handlers import HttpRequestHandler
 from werkzeug import Response
 
-from gateway.exceptions import ProductNotFound, OrderNotFound
+from gateway.exceptions import CartNotFound
 
 
 class HttpEntrypoint(HttpRequestHandler):
@@ -15,8 +15,7 @@ class HttpEntrypoint(HttpRequestHandler):
     mapped_errors = {
         BadRequest: (400, 'BAD_REQUEST'),
         ValidationError: (400, 'VALIDATION_ERROR'),
-        ProductNotFound: (404, 'PRODUCT_NOT_FOUND'),
-        OrderNotFound: (404, 'ORDER_NOT_FOUND'),
+        CartNotFound: (404, 'CART_NOT_FOUND'),
     }
 
     def response_from_exception(self, exc):

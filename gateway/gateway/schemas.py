@@ -21,15 +21,6 @@ class ProductSchema(Schema):
     passenger_capacity = fields.Int(required=True)
 
 
-class GetOrderSchema(Schema):
-
-    class OrderDetail(Schema):
-        id = fields.Int()
-        quantity = fields.Int()
-        product_id = fields.Str()
-        image = fields.Str()
-        price = fields.Decimal(as_string=True)
-        product = fields.Nested(ProductSchema, many=False)
-
-    id = fields.Int()
-    order_details = fields.Nested(OrderDetail, many=True)
+class GetCartSchema(Schema):
+    id = fields.Str()
+    user_id = fields.Str()

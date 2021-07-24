@@ -25,7 +25,7 @@ from nameko import config
 from nameko.standalone.rpc import ServiceRpcProxy
 from nameko.testing.services import replace_dependencies
 
-from orders.service import OrdersService
+from carts.service import CartsService
 
 
 @pytest.fixture
@@ -60,7 +60,7 @@ def create_service_meta(container_factory, test_config):
         ServiceMeta = namedtuple(
             'ServiceMeta', ['container'] + dependency_names
         )
-        container = container_factory(OrdersService)
+        container = container_factory(CartsService)
 
         mocked_dependencies = replace_dependencies(
             container, *dependencies, **dependency_map
@@ -83,7 +83,7 @@ def orders_service(create_service_meta):
 
 
 @pytest.fixture
-def orders_rpc(orders_service):
+def orders_rpc(carts_service):
     """ Fixture used for triggering real RPC entrypoints on Orders service """
-    with ServiceRpcProxy('orders') as proxy:
+    with ServiceRpcProxy('carts') as proxy:
         yield proxy

@@ -1,6 +1,6 @@
 import pytest
 
-from orders.models import DeclarativeBase
+from carts.models import DeclarativeBase
 
 
 @pytest.fixture(scope='session')

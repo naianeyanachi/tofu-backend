@@ -15,8 +15,8 @@ def remote_error(exc_path):
     return wrapper
 
 
-@remote_error('orders.exceptions.NotFound')
-class OrderNotFound(Exception):
+@remote_error('carts.exceptions.NotFound')
+class CartNotFound(Exception):
     """
     If the orders service raises a ``NotFound`` error from an RPC call,
     The ``RemoteError`` will be transformed and raised locally as this
@@ -24,7 +24,3 @@ class OrderNotFound(Exception):
     """
     pass
 
-
-@remote_error('products.exceptions.NotFound')
-class ProductNotFound(Exception):
-    pass
