@@ -4,7 +4,7 @@ from nameko_sqlalchemy import DatabaseSession
 
 from carts.exceptions import NotFound
 from carts.models import DeclarativeBase, Cart, Category, Products, CartItem, MetadataField, MetadataValue
-from carts.schemas import CartSchema, CartsCollectionSchema, CategoryCollectionSchema, ProductCollectionSchema
+from carts.schemas import CartSchema, CategorySchema, ProductSchema
 
 import logging
 
@@ -16,7 +16,7 @@ class CartsService:
     event_dispatcher = EventDispatcher()
 
     @rpc
-    def get_cart(self, cart_id):
+    def get_cart(self, cart_id): #OK
         cart = self.db.query(Cart).get(cart_id)
 
         if not cart:
@@ -58,22 +58,22 @@ class CartsService:
         pass
 
     @rpc
-    def get_categories_by_term(self, term):
-        categories = self.db.query(Category).get(term)
+    def get_categories_by_term(self, term):  # OK
+        categories = self.db.query(Category).filter(Category.name.like(f'%{term}%')).all()
 
         if not categories:
             raise NotFound(f'Category not found')
 
-        return CategoryCollectionSchema().dump(categories).data
+        return CategorySchema(many=True).dump(categories).data
 
     @rpc
-    def get_products_by_category(self, category_id):
-        products = self.db.query(Products).get(category_id)
+    def get_products_by_category(self, category_id):  # OK
+        products = self.db.query(Products).filter(Products.category_id == category_id).all()
 
         if not products:
             raise NotFound(f'Product not found')
 
-        return ProductCollectionSchema().dump(products).data
+        return ProductSchema(many=True).dump(products).data
 
     @rpc
     def delete_cart(self, cart_id):
@@ -95,13 +95,13 @@ class CartsService:
         pass
 
     @rpc
-    def get_carts_by_user(self, user_id):
-        carts = self.db.query(Cart).get(user_id)
+    def get_carts_by_user(self, user_id):  # OK
+        carts = self.db.query(Cart).filter(Cart.user_id == user_id).all()
 
         if not carts:
             raise NotFound(f'User not found')
 
-        return CartsCollectionSchema().dump(carts).data
+        return CartSchema(many=True).dump(carts).data
     #------------------------------------------------------------------
     # @rpc
     # def update_order(self, order):

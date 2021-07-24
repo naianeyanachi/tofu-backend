@@ -1,26 +1,16 @@
 from marshmallow import Schema, fields
 
 
-class CreateOrderDetailSchema(Schema):
-    product_id = fields.Str(required=True)
-    price = fields.Decimal(as_string=True, required=True)
-    quantity = fields.Int(required=True)
+class CartSchema(Schema):
+    id = fields.Str()
+    user_id = fields.Str()
 
 
-class CreateOrderSchema(Schema):
-    order_details = fields.Nested(
-        CreateOrderDetailSchema, many=True, required=True
-    )
-
+class CategorySchema(Schema):
+    id = fields.Str(required=True)
+    name = fields.Str(required=True)
+    
 
 class ProductSchema(Schema):
     id = fields.Str(required=True)
-    title = fields.Str(required=True)
-    maximum_speed = fields.Int(required=True)
-    in_stock = fields.Int(required=True)
-    passenger_capacity = fields.Int(required=True)
-
-
-class GetCartSchema(Schema):
-    id = fields.Str()
-    user_id = fields.Str()
+    category_id = fields.Str(required=True)

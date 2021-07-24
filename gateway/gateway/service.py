@@ -8,7 +8,7 @@ from werkzeug import Response
 
 from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
-from gateway.schemas import GetCartSchema
+from gateway.schemas import CartSchema, CategorySchema, ProductSchema
 
 
 class GatewayService(object):
@@ -21,10 +21,34 @@ class GatewayService(object):
     carts_rpc = RpcProxy('carts')
 
     @http("GET", "/cart/<string:cart_id>", expected_exceptions=CartNotFound)
-    def get_order(self, request, cart_id):
+    def get_cart(self, request, cart_id):  # OK
         cart = self.carts_rpc.get_cart(cart_id)
         return Response(
-            GetCartSchema().dumps(cart).data,
+            CartSchema().dumps(cart).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/users/cart/<string:user_id>", expected_exceptions=CartNotFound)
+    def get_cart_by_user(self, request, user_id):  # OK
+        cart = self.carts_rpc.get_carts_by_user(user_id)
+        return Response(
+            CartSchema(many=True).dumps(cart).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/categories/<string:term>", expected_exceptions=CartNotFound)
+    def get_categories_by_term(self, request, term):  # OK
+        cart_collection = self.carts_rpc.get_categories_by_term(term)
+        return Response(
+            CategorySchema(many=True).dumps(cart_collection).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/category/<string:category_id>/products", expected_exceptions=CartNotFound)
+    def get_products_by_category(self, request, category_id):  # OK
+        product_collection = self.carts_rpc.get_products_by_category(category_id)
+        return Response(
+            ProductSchema(many=True).dumps(product_collection).data,
             mimetype='application/json'
         )
 
