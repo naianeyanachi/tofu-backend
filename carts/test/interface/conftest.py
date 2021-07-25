@@ -18,9 +18,9 @@
     set of unit and interface tests.
 """
 
-import pytest
 from collections import namedtuple
 
+import pytest
 from nameko import config
 from nameko.standalone.rpc import ServiceRpcProxy
 from nameko.testing.services import replace_dependencies

@@ -1,8 +1,6 @@
 import datetime
 
-from sqlalchemy import (
-    DECIMAL, Column, DateTime, ForeignKey, String
-)
+from sqlalchemy import DECIMAL, Column, DateTime, ForeignKey, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -58,6 +56,7 @@ class Products(DeclarativeBase):
         ForeignKey("categories.id", name="fk_category_id_products"),
         nullable=False
     )
+    values = relationship("MetadataValue")
 
 
 class CartItem(DeclarativeBase):
@@ -99,7 +98,4 @@ class MetadataValue(DeclarativeBase):
         nullable=False
     )
     value = Column(String, nullable=False)
-
-
-
-
+    field = relationship("MetadataField", uselist=False)

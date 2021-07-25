@@ -1,10 +1,9 @@
 import pytest
-
 from mock import call
 from nameko.exceptions import RemoteError
 
 from orders.models import Order, OrderDetail
-from orders.schemas import OrderSchema, OrderDetailSchema
+from orders.schemas import OrderDetailSchema, OrderSchema
 
 
 @pytest.fixture

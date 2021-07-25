@@ -23,4 +23,3 @@ class CartNotFound(Exception):
     exception instead.
     """
     pass
-

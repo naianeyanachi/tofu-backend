@@ -1,7 +1,7 @@
 import json
 
 from marshmallow import ValidationError
-from nameko.exceptions import safe_for_serialization, BadRequest
+from nameko.exceptions import BadRequest, safe_for_serialization
 from nameko.web.handlers import HttpRequestHandler
 from werkzeug import Response
 

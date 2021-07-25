@@ -10,6 +10,7 @@ from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
 from gateway.schemas import CartSchema, CategorySchema, ProductSchema
 
+import logging
 
 class GatewayService(object):
     """
@@ -75,7 +76,6 @@ class GatewayService(object):
     #                 },
     #             ]
     #         }
-
 
     #     The response contains the new order ID in a json document ::
 

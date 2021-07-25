@@ -1,9 +1,10 @@
 import json
+
 import pytest
 from marshmallow import ValidationError
 
 from gateway.entrypoints import HttpEntrypoint
-from gateway.exceptions import ProductNotFound, OrderNotFound
+from gateway.exceptions import OrderNotFound, ProductNotFound
 
 
 class TestHttpEntrypoint(object):

@@ -13,10 +13,11 @@ branch_labels = None
 depends_on = None
 
 import datetime
-from alembic import op
-from sqlalchemy.sql import table, column
-from sqlalchemy import String, Integer, DateTime, DECIMAL
+
 import sqlalchemy as sa
+from alembic import op
+from sqlalchemy import DECIMAL, DateTime, Integer, String
+from sqlalchemy.sql import column, table
 
 users_table = table('users',
     column('id', String),

@@ -1,12 +1,13 @@
+import logging
+
 from nameko.events import EventDispatcher
 from nameko.rpc import rpc
 from nameko_sqlalchemy import DatabaseSession
 
 from carts.exceptions import NotFound
-from carts.models import DeclarativeBase, Cart, Category, Products, CartItem, MetadataField, MetadataValue
+from carts.models import (Cart, CartItem, Category, DeclarativeBase,
+                          MetadataField, MetadataValue, Products)
 from carts.schemas import CartSchema, CategorySchema, ProductSchema
-
-import logging
 
 
 class CartsService:
@@ -16,7 +17,7 @@ class CartsService:
     event_dispatcher = EventDispatcher()
 
     @rpc
-    def get_cart(self, cart_id): #OK
+    def get_cart(self, cart_id):  # OK
         cart = self.db.query(Cart).get(cart_id)
 
         if not cart:
@@ -50,11 +51,11 @@ class CartsService:
         return cart
 
     @rpc
-    def remove_products_from_cart(self, cart_id, products, quantity):
+    def remove_products_from_cart(self, cart_id, products, quantity):  # TODO
         pass
 
     @rpc
-    def remove_all_products_from_cart(self, cart_id):
+    def remove_all_products_from_cart(self, cart_id):  # TODO
         pass
 
     @rpc
@@ -68,7 +69,7 @@ class CartsService:
 
     @rpc
     def get_products_by_category(self, category_id):  # OK
-        products = self.db.query(Products).filter(Products.category_id == category_id).all()
+        products = self.db.query(Products).join(Products.values).join(MetadataValue.field).filter(Products.category_id == category_id).all()
 
         if not products:
             raise NotFound(f'Product not found')
@@ -76,7 +77,7 @@ class CartsService:
         return ProductSchema(many=True).dump(products).data
 
     @rpc
-    def delete_cart(self, cart_id):
+    def delete_cart(self, cart_id):  # TODO
         pass
 
     @rpc
@@ -102,7 +103,7 @@ class CartsService:
             raise NotFound(f'User not found')
 
         return CartSchema(many=True).dump(carts).data
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # @rpc
     # def update_order(self, order):
     #     order_details = {
