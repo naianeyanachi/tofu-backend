@@ -1,6 +1,10 @@
 from marshmallow import Schema, fields
 
 
+class CreateCartSchema(Schema):
+    user_id = fields.Str()
+
+
 class CartSchema(Schema):
     id = fields.Str()
     user_id = fields.Str()

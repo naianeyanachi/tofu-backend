@@ -8,7 +8,7 @@ from werkzeug import Response
 
 from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
-from gateway.schemas import CartSchema, CategorySchema, ProductSchema
+from gateway.schemas import CartSchema, CategorySchema, ProductSchema, CreateCartSchema
 
 import logging
 
@@ -50,6 +50,24 @@ class GatewayService(object):
         product_collection = self.carts_rpc.get_products_by_category(category_id)
         return Response(
             ProductSchema(many=True).dumps(product_collection).data,
+            mimetype='application/json'
+        )
+
+    @http("POST", "/cart", expected_exceptions=CartNotFound)
+    def create_cart(self, request):  # OK
+        schema = CreateCartSchema(strict=True)
+
+        try:
+            cart_data = schema.loads(request.get_data(as_text=True)).data
+        except ValueError as exc:
+            raise BadRequest("Invalid input")
+
+        serialized_data = CreateCartSchema().dump(cart_data).data
+        result = self.carts_rpc.create_cart(
+            serialized_data['user_id']
+        )
+        return Response(
+            json.dumps({'id': result['id']}),
             mimetype='application/json'
         )
 

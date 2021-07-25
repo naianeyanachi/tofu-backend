@@ -12,6 +12,7 @@ setup(
         'alembic==1.0.10',
         'marshmallow==2.19.2',
         'psycopg2-binary==2.8.2',
+        "nanoid==2.0.0",
     ],
     extras_require={
         'dev': [

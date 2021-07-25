@@ -3,6 +3,7 @@ import logging
 from nameko.events import EventDispatcher
 from nameko.rpc import rpc
 from nameko_sqlalchemy import DatabaseSession
+from nanoid import generate
 
 from carts.exceptions import NotFound
 from carts.models import (Cart, CartItem, Category, DeclarativeBase,
@@ -81,8 +82,8 @@ class CartsService:
         pass
 
     @rpc
-    def create_cart(self, cart_id, user_id):
-        cart = Cart(cart_id=cart_id, user_id=user_id)
+    def create_cart(self, user_id):
+        cart = Cart(id=generate(), user_id=user_id)
 
         self.db.add(cart)
         self.db.commit()
@@ -93,7 +94,7 @@ class CartsService:
             'cart': cart,
         })
 
-        pass
+        return cart
 
     @rpc
     def get_carts_by_user(self, user_id):  # OK
