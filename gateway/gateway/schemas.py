@@ -5,6 +5,16 @@ class CreateCartSchema(Schema):
     user_id = fields.Str()
 
 
+class AddProductIdSchema(Schema):
+    product_id = fields.Str()
+
+
+class AddProductsSchema(Schema):
+    product_ids = fields.Nested(AddProductIdSchema, many=True)
+    category_id = fields.Str()
+    quantity = fields.Decimal(as_string=True)
+
+
 class MetadataFieldSchema(Schema):
     __tablename__ = "metadata_values"
 

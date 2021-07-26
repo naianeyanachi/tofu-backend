@@ -7,8 +7,8 @@ from nanoid import generate
 
 from carts.exceptions import NotFound
 from carts.models import (Cart, CartItem, Category, DeclarativeBase,
-                          MetadataField, MetadataValue, Product)
-from carts.schemas import CartSchema, CategorySchema, ProductSchema
+                          MetadataValue, Product)
+from carts.schemas import CartSchema, CategorySchema, ProductSchema, CartItemSchema
 
 
 class CartsService:
@@ -27,29 +27,34 @@ class CartsService:
         return CartSchema().dump(cart).data
 
     @rpc
-    def add_products_to_cart(self, cart_id, product_ids, quantity):
-        cart = Cart(
-            cart_id=cart_id,
-            cart_items=[
-                CartItem(
-                    cart_id=cart_id,
-                    product_id=product_id,
-                    quantity=quantity
-                )
-                for product_id in product_ids
-            ]
-        )
-        self.db.add(cart)
+    def add_products_to_cart(self, cart_id, category_id, product_ids, quantity):
+        self.remove_products_from_cart_by_category(cart_id, category_id)
+        cart_items = [
+            CartItem(
+                id=generate(),
+                cart_id=cart_id,
+                product_id=product_id['product_id'],
+                quantity=quantity
+            )
+            for product_id in product_ids
+        ]
+        for cart_item in cart_items:
+            self.db.add(cart_item)
         self.db.commit()
 
-        cart = CartSchema().dump(cart).data
+        cart_items = CartItemSchema(many=True).dump(cart_items).data
 
         self.event_dispatcher('products_added', {
             'cart_id': cart_id,
-            'cart_items': cart.cart_items,
+            'cart_items': cart_items,
         })
 
-        return cart
+    @rpc
+    def remove_products_from_cart_by_category(self, cart_id, category_id):  # TODO
+        cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).filter(Product.category_id == category_id).all()
+        for cart_item in cart_items:
+            self.db.delete(cart_item)
+        self.db.commit()
 
     @rpc
     def remove_products_from_cart(self, cart_id, products, quantity):  # TODO
@@ -70,7 +75,7 @@ class CartsService:
 
     @rpc
     def get_products_by_category(self, category_id):  # OK
-        products = self.db.query(Product).join(Product.values).join(MetadataValue.field).filter(Product.category_id == category_id).all()
+        products = self.db.query(Product).filter(Product.category_id == category_id).all()
 
         if not products:
             raise NotFound(f'Product not found')
