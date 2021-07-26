@@ -29,7 +29,7 @@ class GatewayService(object):
             mimetype='application/json'
         )
 
-    @http("GET", "/users/cart/<string:user_id>", expected_exceptions=CartNotFound)
+    @http("GET", "/users/<string:user_id>/carts", expected_exceptions=CartNotFound)
     def get_cart_by_user(self, request, user_id):  # OK
         cart = self.carts_rpc.get_carts_by_user(user_id)
         return Response(
@@ -53,7 +53,7 @@ class GatewayService(object):
             mimetype='application/json'
         )
 
-    @http("POST", "/cart", expected_exceptions=CartNotFound)
+    @http("POST", "/cart", expected_exceptions=(ValidationError, BadRequest))
     def create_cart(self, request):  # OK
         schema = CreateCartSchema(strict=True)
 

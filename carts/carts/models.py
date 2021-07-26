@@ -38,6 +38,7 @@ class Cart(DeclarativeBase):
         ForeignKey("users.id", name="fk_user_id_carts"),
         nullable=False
     )
+    cart_items = relationship("CartItem")
 
 
 class Category(DeclarativeBase):
@@ -47,7 +48,7 @@ class Category(DeclarativeBase):
     name = Column(String, nullable=False)
 
 
-class Products(DeclarativeBase):
+class Product(DeclarativeBase):
     __tablename__ = "products"
 
     id = Column(String, primary_key=True)
@@ -74,6 +75,7 @@ class CartItem(DeclarativeBase):
         nullable=False
     )
     quantity = Column(DECIMAL, nullable=False)
+    product = relationship("Product", uselist=False)
 
 
 class MetadataField(DeclarativeBase):

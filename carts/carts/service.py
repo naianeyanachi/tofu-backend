@@ -7,7 +7,7 @@ from nanoid import generate
 
 from carts.exceptions import NotFound
 from carts.models import (Cart, CartItem, Category, DeclarativeBase,
-                          MetadataField, MetadataValue, Products)
+                          MetadataField, MetadataValue, Product)
 from carts.schemas import CartSchema, CategorySchema, ProductSchema
 
 
@@ -70,7 +70,7 @@ class CartsService:
 
     @rpc
     def get_products_by_category(self, category_id):  # OK
-        products = self.db.query(Products).join(Products.values).join(MetadataValue.field).filter(Products.category_id == category_id).all()
+        products = self.db.query(Product).join(Product.values).join(MetadataValue.field).filter(Product.category_id == category_id).all()
 
         if not products:
             raise NotFound(f'Product not found')
@@ -82,7 +82,7 @@ class CartsService:
         pass
 
     @rpc
-    def create_cart(self, user_id):
+    def create_cart(self, user_id):  # OK
         cart = Cart(id=generate(), user_id=user_id)
 
         self.db.add(cart)
@@ -104,6 +104,7 @@ class CartsService:
             raise NotFound(f'User not found')
 
         return CartSchema(many=True).dump(carts).data
+
     # ------------------------------------------------------------------
     # @rpc
     # def update_order(self, order):
