@@ -58,7 +58,10 @@ class CartsService:
 
     @rpc
     def remove_all_products_from_cart(self, cart_id):  # TODO
-        pass
+        cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).all()
+        for cart_item in cart_items:
+            self.db.delete(cart_item)
+        self.db.commit()
 
     @rpc
     def get_categories_by_term(self, term):  # OK
