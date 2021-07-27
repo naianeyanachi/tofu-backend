@@ -45,7 +45,7 @@ services:
         - ./carts:/application
 
   gateway:
-    container_name: nameko-example-gateway
+    container_name: tofu-gateway
     depends_on:
       - rabbit
     ports:

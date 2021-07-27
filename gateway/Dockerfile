@@ -10,7 +10,7 @@ FROM nameko-example-base AS install
 
 COPY --from=wheels /application/wheelhouse /wheelhouse
 
-RUN pip install --no-index -f /wheelhouse nameko_examples_gateway
+RUN pip install --no-index -f /wheelhouse tofu-gateway
 
 # ------------------------------------------------------------------------
 
