@@ -7,7 +7,7 @@ services:
         - "15673:15672" # Exposing RabbitMQ web management on different port for convenience
     restart: always
 
-  postgres:
+  carts-postgres:
     container_name: tofu-carts-postgres
     image: postgres
     ports:
@@ -22,16 +22,16 @@ services:
     container_name: tofu-carts
     depends_on:
       - rabbit
-      - postgres
+      - carts-postgres
     ports:
         - "8001:8000"
     links:
         - "rabbit:tofu-rabbitmq"
-        - "postgres:tofu-cart-postgres"
+        - "carts-postgres:tofu-carts-postgres"
     environment:
         DB_PASSWORD: "password"
         DB_USER: "postgres"
-        DB_HOST: "postgres"
+        DB_HOST: "carts-postgres"
         DB_NAME: "tofu_cart"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
