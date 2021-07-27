@@ -18,7 +18,7 @@ class CartsService:
     event_dispatcher = EventDispatcher()
 
     @rpc
-    def get_cart(self, cart_id):  # OK
+    def get_cart(self, cart_id):
         cart = self.db.query(Cart).get(cart_id)
 
         if not cart:
@@ -27,7 +27,7 @@ class CartsService:
         return CartSchema().dump(cart).data
 
     @rpc
-    def add_products_to_cart(self, cart_id, category_id, product_ids, quantity):  # OK
+    def add_products_to_cart(self, cart_id, category_id, product_ids, quantity):
         self.remove_products_from_cart_by_category(cart_id, category_id)
         cart_items = [
             CartItem(
@@ -50,21 +50,21 @@ class CartsService:
         })
 
     @rpc
-    def remove_products_from_cart_by_category(self, cart_id, category_id):  # OK
+    def remove_products_from_cart_by_category(self, cart_id, category_id):
         cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).filter(Product.category_id == category_id).all()
         for cart_item in cart_items:
             self.db.delete(cart_item)
         self.db.commit()
 
     @rpc
-    def remove_all_products_from_cart(self, cart_id):  # TODO
+    def remove_all_products_from_cart(self, cart_id):
         cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).all()
         for cart_item in cart_items:
             self.db.delete(cart_item)
         self.db.commit()
 
     @rpc
-    def get_categories_by_term(self, term):  # OK
+    def get_categories_by_term(self, term):
         categories = self.db.query(Category).filter(Category.name.like(f'%{term}%')).all()
 
         if not categories:
@@ -73,7 +73,7 @@ class CartsService:
         return CategorySchema(many=True).dump(categories).data
 
     @rpc
-    def get_products_by_category(self, category_id):  # OK
+    def get_products_by_category(self, category_id):
         products = self.db.query(Product).filter(Product.category_id == category_id).all()
 
         if not products:
@@ -82,13 +82,13 @@ class CartsService:
         return ProductSchema(many=True).dump(products).data
 
     @rpc
-    def delete_cart(self, cart_id):  # OK
+    def delete_cart(self, cart_id):
         cart = self.db.query(Cart).get(cart_id)
         self.db.delete(cart)
         self.db.commit()
 
     @rpc
-    def create_cart(self, user_id):  # OK
+    def create_cart(self, user_id):
         cart = Cart(id=generate(), user_id=user_id)
 
         self.db.add(cart)
@@ -103,33 +103,10 @@ class CartsService:
         return cart
 
     @rpc
-    def get_carts_by_user(self, user_id):  # OK
+    def get_carts_by_user(self, user_id):
         carts = self.db.query(Cart).filter(Cart.user_id == user_id).all()
 
         if not carts:
             raise NotFound('User not found')
 
         return CartSchema(many=True).dump(carts).data
-
-    # ------------------------------------------------------------------
-    # @rpc
-    # def update_order(self, order):
-    #     order_details = {
-    #         order_details['id']: order_details
-    #         for order_details in order['order_details']
-    #     }
-
-    #     order = self.db.query(Order).get(order['id'])
-
-    #     for order_detail in order.order_details:
-    #         order_detail.price = order_details[order_detail.id]['price']
-    #         order_detail.quantity = order_details[order_detail.id]['quantity']
-
-    #     self.db.commit()
-    #     return OrderSchema().dump(order).data
-
-    # @rpc
-    # def delete_order(self, order_id):
-    #     order = self.db.query(Order).get(order_id)
-    #     self.db.delete(order)
-    #     self.db.commit()
