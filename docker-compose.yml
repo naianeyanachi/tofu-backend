@@ -1,14 +1,14 @@
 version: "2"
 services:
   rabbit:
-    container_name: nameko-example-rabbitmq
+    container_name: tofu-rabbitmq
     image: rabbitmq:3.7-management
     ports:
         - "15673:15672" # Exposing RabbitMQ web management on different port for convenience
     restart: always
 
   postgres:
-    container_name: nameko-example-postgres
+    container_name: tofu-cart-postgres
     image: postgres
     ports:
         - "5433:5432" # Exposing Postgres on different port for convenience
@@ -26,8 +26,8 @@ services:
     ports:
         - "8001:8000"
     links:
-        - "rabbit:nameko-example-rabbitmq"
-        - "postgres:nameko-example-postgres"
+        - "rabbit:tofu-rabbitmq"
+        - "postgres:tofu-cart-postgres"
     environment:
         DB_PASSWORD: "password"
         DB_USER: "postgres"
@@ -41,8 +41,6 @@ services:
     build:
         context: ./carts
         dockerfile: Dockerfile
-    volumes:
-        - ./carts:/application
 
   gateway:
     container_name: tofu-gateway
@@ -51,7 +49,7 @@ services:
     ports:
         - "8003:8000"
     links:
-        - "rabbit:nameko-example-rabbitmq"
+        - "rabbit:tofu-rabbitmq"
     environment:
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
@@ -61,5 +59,3 @@ services:
     build:
         context: ./gateway
         dockerfile: Dockerfile
-    volumes:
-        - ./gateway:/application
