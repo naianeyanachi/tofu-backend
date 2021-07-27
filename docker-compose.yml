@@ -7,6 +7,24 @@ services:
         - "15673:15672" # Exposing RabbitMQ web management on different port for convenience
     restart: always
 
+  gateway:
+    container_name: tofu-gateway
+    depends_on:
+      - rabbit
+    ports:
+        - "8003:8000"
+    links:
+        - "rabbit:tofu-rabbitmq"
+    environment:
+        RABBIT_PASSWORD: "guest"
+        RABBIT_USER: "guest"
+        RABBIT_HOST: "rabbit"
+        RABBIT_PORT: "5672"
+        RABBIT_MANAGEMENT_PORT: "15672"
+    build:
+        context: ./gateway
+        dockerfile: Dockerfile
+
   carts-postgres:
     container_name: tofu-carts-postgres
     image: postgres
@@ -40,22 +58,4 @@ services:
         RABBIT_MANAGEMENT_PORT: "15672"
     build:
         context: ./carts
-        dockerfile: Dockerfile
-
-  gateway:
-    container_name: tofu-gateway
-    depends_on:
-      - rabbit
-    ports:
-        - "8003:8000"
-    links:
-        - "rabbit:tofu-rabbitmq"
-    environment:
-        RABBIT_PASSWORD: "guest"
-        RABBIT_USER: "guest"
-        RABBIT_HOST: "rabbit"
-        RABBIT_PORT: "5672"
-        RABBIT_MANAGEMENT_PORT: "15672"
-    build:
-        context: ./gateway
         dockerfile: Dockerfile
