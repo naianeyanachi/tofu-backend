@@ -6,9 +6,9 @@ from nameko_sqlalchemy import DatabaseSession
 from nanoid import generate
 
 from carts.exceptions import NotFound
-from carts.models import (Cart, CartItem, Category, DeclarativeBase,
-                          MetadataValue, Product)
-from carts.schemas import CartSchema, CategorySchema, ProductSchema, CartItemSchema
+from carts.models import Cart, CartItem, Category, DeclarativeBase, Product
+from carts.schemas import (CartItemSchema, CartSchema, CategorySchema,
+                           ProductSchema)
 
 
 class CartsService:
@@ -22,7 +22,7 @@ class CartsService:
         cart = self.db.query(Cart).get(cart_id)
 
         if not cart:
-            raise NotFound(f'Cart not found')
+            raise NotFound('Cart not found')
 
         return CartSchema().dump(cart).data
 
@@ -65,7 +65,7 @@ class CartsService:
         categories = self.db.query(Category).filter(Category.name.like(f'%{term}%')).all()
 
         if not categories:
-            raise NotFound(f'Category not found')
+            raise NotFound('Category not found')
 
         return CategorySchema(many=True).dump(categories).data
 
@@ -79,8 +79,10 @@ class CartsService:
         return ProductSchema(many=True).dump(products).data
 
     @rpc
-    def delete_cart(self, cart_id):  # TODO
-        pass
+    def delete_cart(self, cart_id):  # OK
+        cart = self.db.query(Cart).get(cart_id)
+        self.db.delete(cart)
+        self.db.commit()
 
     @rpc
     def create_cart(self, user_id):  # OK
@@ -102,7 +104,7 @@ class CartsService:
         carts = self.db.query(Cart).filter(Cart.user_id == user_id).all()
 
         if not carts:
-            raise NotFound(f'User not found')
+            raise NotFound('User not found')
 
         return CartSchema(many=True).dump(carts).data
 

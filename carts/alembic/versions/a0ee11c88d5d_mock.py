@@ -14,7 +14,6 @@ depends_on = None
 
 import datetime
 
-import sqlalchemy as sa
 from alembic import op
 from sqlalchemy import DECIMAL, DateTime, Integer, String
 from sqlalchemy.sql import column, table
@@ -65,6 +64,7 @@ metadata_values_table = table('metadata_values',
     column('created_at', DateTime),
     column('updated_at', DateTime),
 )
+
 
 def upgrade():
     op.bulk_insert(users_table,

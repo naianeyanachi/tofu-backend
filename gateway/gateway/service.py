@@ -1,16 +1,16 @@
 import json
+import logging
 
 from marshmallow import ValidationError
-from nameko import config
 from nameko.exceptions import BadRequest
 from nameko.rpc import RpcProxy
 from werkzeug import Response
 
 from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
-from gateway.schemas import AddProductsSchema, CartSchema, CategorySchema, ProductSchema, CreateCartSchema
+from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
+                             CreateCartSchema, ProductSchema)
 
-import logging
 
 class GatewayService(object):
     """
@@ -59,7 +59,7 @@ class GatewayService(object):
 
         try:
             cart_data = schema.loads(request.get_data(as_text=True)).data
-        except ValueError as exc:
+        except ValueError:
             raise BadRequest("Invalid input")
 
         serialized_data = CreateCartSchema().dump(cart_data).data
@@ -77,7 +77,7 @@ class GatewayService(object):
 
         try:
             product_data = schema.loads(request.get_data(as_text=True)).data
-        except ValueError as exc:
+        except ValueError:
             raise BadRequest("Invalid input")
 
         serialized_data = AddProductsSchema().dump(product_data).data
@@ -88,6 +88,11 @@ class GatewayService(object):
             serialized_data['quantity']
         )
 
+        return 'success'
+
+    @http("DELETE", "/cart/<string:cart_id>", expected_exceptions=CartNotFound)
+    def delete_cart(self, request, cart_id):  # OK
+        self.carts_rpc.delete_cart(cart_id)
         return 'success'
 
     # @http(
