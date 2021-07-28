@@ -20,6 +20,7 @@ class GatewayService(object):
     name = 'gateway'
 
     carts_rpc = RpcProxy('carts')
+    search_rpc = RpcProxy('search')
 
     @http("GET", "/cart/<string:cart_id>", expected_exceptions=CartNotFound)
     def get_cart(self, _, cart_id):
@@ -113,6 +114,24 @@ class GatewayService(object):
         self.carts_rpc.remove_products_from_cart_by_category(
             cart_id,
             serialized_data['category_id'],
+        )
+
+        return 'success'
+
+    @http("GET", "/search", expected_exceptions=CartNotFound)
+    def search_by_cart(self, request):
+        schema = CartSchema(strict=True)
+
+        try:
+            cart_data = schema.loads(request.get_data(as_text=True)).data
+        except ValueError:
+            raise BadRequest("Invalid input")
+
+        serialized_data = CartSchema().dump(cart_data).data
+        self.carts_rpc.search_by_cart(
+            serialized_data['user_id'],
+            serialized_data['id'],
+            serialized_data['cart_items'],
         )
 
         return 'success'

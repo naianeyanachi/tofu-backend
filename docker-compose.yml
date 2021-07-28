@@ -4,7 +4,7 @@ services:
     container_name: tofu-rabbitmq
     image: rabbitmq:3.7-management
     ports:
-        - "15673:15672" # Exposing RabbitMQ web management on different port for convenience
+      - "15673:15672"
     restart: always
 
   gateway:
@@ -12,28 +12,28 @@ services:
     depends_on:
       - rabbit
     ports:
-        - "8003:8000"
+      - "8000:8000"
     links:
-        - "rabbit:tofu-rabbitmq"
+      - "rabbit:tofu-rabbitmq"
     environment:
-        RABBIT_PASSWORD: "guest"
-        RABBIT_USER: "guest"
-        RABBIT_HOST: "rabbit"
-        RABBIT_PORT: "5672"
-        RABBIT_MANAGEMENT_PORT: "15672"
+      RABBIT_PASSWORD: "guest"
+      RABBIT_USER: "guest"
+      RABBIT_HOST: "rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
     build:
-        context: ./gateway
-        dockerfile: Dockerfile
+      context: ./gateway
+      dockerfile: Dockerfile
 
   carts-postgres:
     container_name: tofu-carts-postgres
     image: postgres
     ports:
-        - "5433:5432" # Exposing Postgres on different port for convenience
+      - "5433:5432"
     environment:
-        POSTGRES_DB: "tofu_cart"
-        POSTGRES_PASSWORD: "password"
-        POSTGRES_USER: "postgres"
+      POSTGRES_DB: "tofu_cart"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "postgres"
     restart: always
 
   carts:
@@ -42,20 +42,55 @@ services:
       - rabbit
       - carts-postgres
     ports:
-        - "8001:8000"
+      - "8001:8000"
+    links:
+      - "rabbit:tofu-rabbitmq"
+      - "carts-postgres:tofu-carts-postgres"
+    environment:
+      DB_PASSWORD: "password"
+      DB_USER: "postgres"
+      DB_HOST: "carts-postgres"
+      DB_NAME: "tofu_cart"
+      RABBIT_PASSWORD: "guest"
+      RABBIT_USER: "guest"
+      RABBIT_HOST: "rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
+    build:
+      context: ./carts
+      dockerfile: Dockerfile
+
+  search-postgres:
+    container_name: tofu-search-postgres
+    image: postgres
+    ports:
+        - "5434:5432"
+    environment:
+        POSTGRES_DB: "tofu_search"
+        POSTGRES_PASSWORD: "password"
+        POSTGRES_USER: "postgres"
+    restart: always
+
+  search:
+    container_name: tofu-search
+    depends_on:
+      - rabbit
+      - search-postgres
+    ports:
+        - "8002:8000"
     links:
         - "rabbit:tofu-rabbitmq"
-        - "carts-postgres:tofu-carts-postgres"
+        - "search-postgres:tofu-search-postgres"
     environment:
         DB_PASSWORD: "password"
         DB_USER: "postgres"
-        DB_HOST: "carts-postgres"
-        DB_NAME: "tofu_cart"
+        DB_HOST: "search-postgres"
+        DB_NAME: "tofu_search"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"
         RABBIT_PORT: "5672"
         RABBIT_MANAGEMENT_PORT: "15672"
     build:
-        context: ./carts
+        context: ./search
         dockerfile: Dockerfile
