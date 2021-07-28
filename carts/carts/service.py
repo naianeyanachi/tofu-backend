@@ -1,6 +1,5 @@
 import logging
 
-from nameko.events import EventDispatcher
 from nameko.rpc import rpc
 from nameko_sqlalchemy import DatabaseSession
 from nanoid import generate
@@ -15,7 +14,6 @@ class CartsService:
     name = 'carts'
 
     db = DatabaseSession(DeclarativeBase)
-    event_dispatcher = EventDispatcher()
 
     @rpc
     def get_cart(self, cart_id):
@@ -43,11 +41,6 @@ class CartsService:
         self.db.commit()
 
         cart_items = CartItemSchema(many=True).dump(cart_items).data
-
-        self.event_dispatcher('products_added', {
-            'cart_id': cart_id,
-            'cart_items': cart_items,
-        })
 
     @rpc
     def remove_products_from_cart_by_category(self, cart_id, category_id):
@@ -95,10 +88,6 @@ class CartsService:
         self.db.commit()
 
         cart = CartSchema().dump(cart).data
-
-        self.event_dispatcher('products_added', {
-            'cart': cart,
-        })
 
         return cart
 
