@@ -9,7 +9,8 @@ from werkzeug import Response
 from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
 from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
-                             CreateCartSchema, ProductSchema, RemoveProductsSchema)
+                             CreateCartSchema, ProductSchema, RemoveProductsSchema,
+                             SearchSchema)
 
 
 class GatewayService(object):
@@ -118,19 +119,18 @@ class GatewayService(object):
 
         return 'success'
 
-    @http("GET", "/search", expected_exceptions=CartNotFound)
-    def search_by_cart(self, request):
-        schema = CartSchema(strict=True)
+    @http("GET", "/search", expected_exceptions=(ValidationError, BadRequest))
+    def search(self, request):
+        schema = SearchSchema(strict=True)
 
         try:
-            cart_data = schema.loads(request.get_data(as_text=True)).data
+            search_data = schema.loads(request.get_data(as_text=True)).data
         except ValueError:
             raise BadRequest("Invalid input")
 
-        serialized_data = CartSchema().dump(cart_data).data
-        self.carts_rpc.search_by_cart(
+        serialized_data = SearchSchema().dump(search_data).data
+        self.search_rpc.search(
             serialized_data['user_id'],
-            serialized_data['id'],
             serialized_data['cart_items'],
         )
 

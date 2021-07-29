@@ -58,6 +58,7 @@ class Product(DeclarativeBase):
         nullable=False
     )
     values = relationship("MetadataValue")
+    category = relationship("Category")
 
 
 class CartItem(DeclarativeBase):
