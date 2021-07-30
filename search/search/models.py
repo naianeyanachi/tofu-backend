@@ -23,7 +23,7 @@ DeclarativeBase = declarative_base(cls=Base)
 
 
 class Searches(DeclarativeBase):
-    __tablename__ = "carts"
+    __tablename__ = "searches"
 
     id = Column(String, primary_key=True)
     cart_id = relationship("Cart")
