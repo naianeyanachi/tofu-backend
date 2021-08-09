@@ -1,19 +1,19 @@
 """initial schema
 
-Revision ID: dd33cb03d01f
-Revises:
-Create Date: 2021-07-23 13:51:31.034548
+Revision ID: add14a4956c7
+Revises: 
+Create Date: 2021-08-07 23:27:33.645355
 
 """
 
-import sqlalchemy as sa
-from alembic import op
-
 # revision identifiers, used by Alembic.
-revision = 'dd33cb03d01f'
+revision = 'add14a4956c7'
 down_revision = None
 branch_labels = None
 depends_on = None
+
+from alembic import op
+import sqlalchemy as sa
 
 
 def upgrade():

@@ -6,7 +6,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import create_engine
 
-from carts.models import DeclarativeBase
+from search.models import DeclarativeBase
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -37,7 +37,7 @@ def get_url():
         db_pass=os.getenv("DB_PASSWORD", "password"),
         db_host=os.getenv("DB_HOST", "localhost"),
         db_port=os.getenv("DB_PORT", "5432"),
-        db_name=os.getenv("DB_NAME", "orders"),
+        db_name=os.getenv("DB_NAME", "tofu_search"),
     )
 
 

@@ -22,11 +22,16 @@ class Base(object):
 DeclarativeBase = declarative_base(cls=Base)
 
 
-class Searches(DeclarativeBase):
+class Search(DeclarativeBase):
     __tablename__ = "searches"
 
     id = Column(String, primary_key=True)
-    cart_id = relationship("Cart")
+    cart_id = Column(
+        String,
+        ForeignKey("carts.id", name="fk_cart_id_carts"),
+        nullable=False
+    )
+    cart = relationship("Cart")
 
 
 class Cart(DeclarativeBase):
@@ -34,7 +39,7 @@ class Cart(DeclarativeBase):
 
     id = Column(String, primary_key=True)
     user_id = Column(String, nullable=False)
-    cart_items = relationship("CartItem")
+    cart_items = relationship("CartItem", cascade="merge")
 
 
 class Category(DeclarativeBase):
@@ -53,7 +58,8 @@ class Product(DeclarativeBase):
         ForeignKey("categories.id", name="fk_category_id_products"),
         nullable=False
     )
-    values = relationship("MetadataValue")
+    category = relationship("Category", cascade="merge")
+    values = relationship("MetadataValue", cascade="merge")
 
 
 class CartItem(DeclarativeBase):
@@ -71,7 +77,7 @@ class CartItem(DeclarativeBase):
         nullable=False
     )
     quantity = Column(DECIMAL, nullable=False)
-    product = relationship("Product", uselist=False)
+    product = relationship("Product", uselist=False, cascade="merge")
 
 
 class MetadataField(DeclarativeBase):
@@ -96,4 +102,4 @@ class MetadataValue(DeclarativeBase):
         nullable=False
     )
     value = Column(String, nullable=False)
-    field = relationship("MetadataField", uselist=False)
+    field = relationship("MetadataField", uselist=False, cascade="merge")

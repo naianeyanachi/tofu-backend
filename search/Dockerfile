@@ -14,7 +14,7 @@ RUN pip install --no-index -f /wheelhouse tofu-search
 
 # ------------------------------------------------------------------------
 
-FROM nameko-example-base
+FROM nameko-example-base AS service
 
 COPY --from=install /appenv /appenv
 

@@ -129,9 +129,9 @@ class GatewayService(object):
             raise BadRequest("Invalid input")
 
         serialized_data = SearchSchema().dump(search_data).data
-        self.search_rpc.search(
+        result = self.search_rpc.search(
             serialized_data['user_id'],
             serialized_data['cart_items'],
         )
-
-        return 'success'
+        logging.error(result)
+        return f'{result}'

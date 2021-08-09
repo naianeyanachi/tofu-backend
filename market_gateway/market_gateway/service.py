@@ -1,26 +1,18 @@
 import json
 import logging
 
-# from marshmallow import ValidationError
-# from nameko.exceptions import BadRequest
-from nameko.rpc import RpcProxy, rpc
+from nameko.rpc import rpc
 from werkzeug import Response
 
-# from gateway.exceptions import CartNotFound
-# from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
-#                              CreateCartSchema, ProductSchema, RemoveProductsSchema,
-#                              SearchSchema)
+from markets.markets import Markets
 
 
 class MarketGatewayService(object):
-    """
-    Service acts as a gateway to other services over http.
-    """
-
     name = 'market_gateway'
 
-    search_rpc = RpcProxy('search')
+    markets = Markets()
 
     @rpc
-    def search(self):
-        logging.error('aaaaa')
+    def search_by_categories(self, categories):
+        return self.markets.search_all(categories)
+
