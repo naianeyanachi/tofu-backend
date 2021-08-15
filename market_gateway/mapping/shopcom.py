@@ -4,7 +4,6 @@ import random
 class ShopcomMapping:
 
     def get_term_from_category(self, category):
-        # eggs, milk, bread, orange juice (oj), rice, steak, or butter
         mapping = {
             'chocolate': 'chocolate',
             'salgadinho': 'chips',
