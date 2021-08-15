@@ -138,7 +138,15 @@ class GatewayService(object):
             mimetype='application/json'
         )
     
-    @http("GET", "/user/<string:user_id>/history", expected_exceptions=(ValidationError, BadRequest))
+    @http("GET", "/search/<string:search_id>")
+    def search_again(self, request, search_id):
+        result = self.search_rpc.search_again(search_id)
+        return Response(
+            json.dumps(result),
+            mimetype='application/json'
+        )
+    
+    @http("GET", "/user/<string:user_id>/history")
     def get_search_history_by_user(self, request, user_id):
         searches = self.search_rpc.get_search_history_by_user(user_id)
         return Response(

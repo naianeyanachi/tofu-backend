@@ -18,9 +18,14 @@ class MetadataValueSchema(Schema):
     field = fields.Nested(MetadataFieldSchema)
 
 
+class CategorySchema(Schema):
+    id = fields.Str(required=True)
+    name = fields.Str(required=True)
+
+
 class ProductSchema(Schema):
     id = fields.Str(required=True)
-    category_id = fields.Str(required=True)
+    category = fields.Nested(CategorySchema)
     values = fields.Nested(MetadataValueSchema, many=True)
 
 
@@ -36,11 +41,6 @@ class CartSchema(Schema):
     id = fields.Str(required=True)
     user_id = fields.Str(required=True)
     cart_items = fields.Nested(CartItemSchema, many=True)
-
-
-class CategorySchema(Schema):
-    id = fields.Str(required=True)
-    name = fields.Str(required=True)
 
 
 class SearchSchema(Schema):

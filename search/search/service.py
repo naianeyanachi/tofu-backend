@@ -16,12 +16,7 @@ class SearchService:
     
     db = DatabaseSession(DeclarativeBase)
 
-    @rpc
-    def search(self, user_id, cart_items):
-        # add everything on search db
-        #   don't add if already added
-
-        cart_id = generate()
+    def get_categories_and_cart(self, cart_id, user_id, cart_items):
         categories = set([])
         for i, cart_item in enumerate(cart_items):
             for j, value in enumerate(cart_item['product']['values']):
@@ -55,6 +50,16 @@ class SearchService:
             cart_items=cart_items,
             user_id=user_id
         )
+
+        return list(categories), cart
+
+    @rpc
+    def search(self, user_id, cart_items):
+        # add everything on search db
+        #   don't add if already added
+
+        cart_id = generate()
+        categories, cart = self.get_categories_and_cart(cart_id, user_id, cart_items)
         self.db.merge(Search(
             id=generate(),
             cart_id=cart_id,
@@ -68,7 +73,7 @@ class SearchService:
         # search on each market on the list of supermarkets
         #   search products by category
 
-        return self.market_gateway_rpc.search_by_categories(list(categories))
+        return self.market_gateway_rpc.search_by_categories(categories)
 
         # then filter results by metadata values
         #   make a buy list of each market
@@ -76,7 +81,21 @@ class SearchService:
 
     @rpc
     def search_again(self, search_id):
-        pass
+        search = self.db.query(Search).get(search_id)
+
+        if not search:
+            raise NotFound('Search not found')
+        
+        search = SearchSchema().dump(search).data
+        cart_id = search['cart']['id']
+        user_id = search['cart']['user_id']
+        cart_items = search['cart']['cart_items']
+        new_search = Search(id=generate(), cart_id=cart_id)
+        self.db.add(new_search)
+        self.db.commit()
+
+        categories, _ = self.get_categories_and_cart(cart_id, user_id, cart_items)
+        return self.market_gateway_rpc.search_by_categories(categories)
 
     @rpc
     def get_search_history_by_user(self, user_id):
