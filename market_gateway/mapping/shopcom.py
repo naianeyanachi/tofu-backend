@@ -7,7 +7,7 @@ class ShopcomMapping:
         mapping = {
             'chocolate': 'chocolate',
             'salgadinho': 'chips',
-            'leite condensado': 'bread'
+            'leite condensado': 'condensed milk'
         }
         try:
             product = mapping[category]
