@@ -21,23 +21,19 @@ class GroceryBearMapping:
         return product
 
     def normalize_response(self, response):
-        normalized = {}
+        normalized = []
         for obj in response:
-            city = obj['city']
             product_name = obj['title']
             price = obj['price']
-            if city not in normalized:
-                normalized[city] = []
             index = next(
-                (i for i, item in enumerate(normalized[city]) if item['name'] == product_name),
+                (i for i, item in enumerate(normalized) if item['name'] == product_name),
                 None
             )
             if index is not None:
-                normalized[city][index]['price'] = min(price, normalized[city][index]['price'])
+                normalized[index]['price'] = min(price, normalized[index]['price'])
             else:
-                normalized[city].append({
+                normalized.append({
                     'name': product_name,
                     'price': price
                 })
-        logging.error(normalized)
         return normalized

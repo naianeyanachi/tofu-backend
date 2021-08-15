@@ -1,10 +1,13 @@
 from markets.grocerybear import GroceryBear
+from markets.shopcom import Shopcom
 
 
 class Markets:
     markets = [
-        GroceryBear()
+        GroceryBear(),
+        Shopcom(),
     ]
+    
     def search_all(self, categories):
         result = {}
         for market in self.markets:
