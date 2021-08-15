@@ -50,10 +50,15 @@ class SearchService:
                     values=cart_item['product']['values'],
                 )
             )
-        self.db.merge(Cart(
+        cart = Cart(
             id=cart_id,
             cart_items=cart_items,
             user_id=user_id
+        )
+        self.db.merge(Search(
+            id=generate(),
+            cart_id=cart_id,
+            cart=cart
         ))
         self.db.commit()
 
@@ -75,4 +80,5 @@ class SearchService:
 
     @rpc
     def get_search_history_by_user(self, user_id):
-        pass
+        searches = self.db.query(Search).join(Search.cart).filter(Cart.user_id == user_id).all()
+        return SearchSchema(many=True).dump(searches).data

@@ -60,3 +60,14 @@ class CartSchema(Schema):
 class SearchSchema(Schema):
     user_id = fields.Str(required=True)
     cart_items = fields.Nested(CartItemSchema, many=True)
+
+
+class CartHistorySchema(Schema):
+    id = fields.Str(required=True)
+    cart_items = fields.Nested(CartItemSchema, many=True)
+
+
+class SearchHistorySchema(Schema):
+    id = fields.Str(required=True)
+    created_at = fields.Str(required=True)
+    cart = fields.Nested(CartHistorySchema)

@@ -45,5 +45,5 @@ class CategorySchema(Schema):
 
 class SearchSchema(Schema):
     id = fields.Str(required=True)
-    user_id = fields.Str(required=True)
-    cart_items = fields.Nested(CartItemSchema, many=True)
+    created_at = fields.DateTime(required=True)
+    cart = fields.Nested(CartSchema)

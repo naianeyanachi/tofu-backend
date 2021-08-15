@@ -10,7 +10,7 @@ from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
 from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
                              CreateCartSchema, ProductSchema, RemoveProductsSchema,
-                             SearchSchema)
+                             SearchSchema, SearchHistorySchema)
 
 
 class GatewayService(object):
@@ -31,7 +31,7 @@ class GatewayService(object):
             mimetype='application/json'
         )
 
-    @http("GET", "/users/<string:user_id>/carts", expected_exceptions=CartNotFound)
+    @http("GET", "/user/<string:user_id>/carts", expected_exceptions=CartNotFound)
     def get_cart_by_user(self, _, user_id):
         cart = self.carts_rpc.get_carts_by_user(user_id)
         return Response(
@@ -133,5 +133,16 @@ class GatewayService(object):
             serialized_data['user_id'],
             serialized_data['cart_items'],
         )
-        logging.error(result)
-        return f'{result}'
+        return Response(
+            json.dumps(result),
+            mimetype='application/json'
+        )
+    
+    @http("GET", "/user/<string:user_id>/history", expected_exceptions=(ValidationError, BadRequest))
+    def get_search_history_by_user(self, request, user_id):
+        searches = self.search_rpc.get_search_history_by_user(user_id)
+        return Response(
+            SearchHistorySchema(many=True).dumps(searches).data,
+            mimetype='application/json'
+        )
+
