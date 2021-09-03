@@ -34,8 +34,16 @@ class HttpEntrypoint(HttpRequestHandler):
                 'message': safe_for_serialization(exc),
             }),
             status=status_code,
-            mimetype='application/json'
+            mimetype='application/json',
+            headers={
+                'Access-Control-Allow-Origin': '*'
+            }
         )
+    
+    def response_from_result(self, *args, **kwargs):
+        response = super(HttpEntrypoint, self).response_from_result(*args, **kwargs)
+        response.headers.add('Access-Control-Allow-Origin', '*')  # or whatever
+        return response
 
 
 http = HttpEntrypoint.decorator
