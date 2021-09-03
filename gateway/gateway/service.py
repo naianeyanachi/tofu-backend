@@ -119,7 +119,7 @@ class GatewayService(object):
 
         return 'success'
 
-    @http("GET", "/search", expected_exceptions=(ValidationError, BadRequest))
+    @http("POST", "/search", expected_exceptions=(ValidationError, BadRequest))
     def search(self, request):
         schema = SearchSchema(strict=True)
 
@@ -139,7 +139,7 @@ class GatewayService(object):
         )
     
     @http("GET", "/search/<string:search_id>")
-    def search_again(self, request, search_id):
+    def search_again(self, _, search_id):
         result = self.search_rpc.search_again(search_id)
         return Response(
             json.dumps(result),
@@ -147,7 +147,7 @@ class GatewayService(object):
         )
     
     @http("GET", "/user/<string:user_id>/history")
-    def get_search_history_by_user(self, request, user_id):
+    def get_search_history_by_user(self, _, user_id):
         searches = self.search_rpc.get_search_history_by_user(user_id)
         return Response(
             SearchHistorySchema(many=True).dumps(searches).data,

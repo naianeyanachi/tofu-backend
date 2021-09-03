@@ -78,7 +78,6 @@ class SearchService:
         # then filter results by metadata values
         #   make a buy list of each market
 
-
     @rpc
     def search_again(self, search_id):
         search = self.db.query(Search).get(search_id)
