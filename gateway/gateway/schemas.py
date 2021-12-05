@@ -6,6 +6,10 @@ class CreateCartSchema(Schema):
     name = fields.Str(required=True)
 
 
+class RenameCartSchema(Schema):
+    name = fields.Str(required=True)
+
+
 class AddProductIdSchema(Schema):
     product_id = fields.Str(required=True)
 

@@ -75,6 +75,12 @@ class CartsService:
         return ProductSchema(many=True).dump(products).data
 
     @rpc
+    def rename_cart(self, cart_id, name):
+        cart = self.db.query(Cart).get(cart_id)
+        cart.name = name
+        self.db.commit()
+
+    @rpc
     def delete_cart(self, cart_id):
         cart = self.db.query(Cart).get(cart_id)
         self.db.delete(cart)

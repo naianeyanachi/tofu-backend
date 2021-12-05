@@ -10,7 +10,7 @@ from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
 from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
                              CreateCartSchema, ProductSchema, RemoveProductsSchema,
-                             SearchSchema, SearchHistorySchema)
+                             SearchSchema, SearchHistorySchema, RenameCartSchema)
 
 
 class GatewayService(object):
@@ -89,6 +89,23 @@ class GatewayService(object):
             serialized_data['category_id'],
             serialized_data['product_ids'],
             serialized_data['quantity']
+        )
+
+        return 'success'
+
+    @http("PUT", "/cart/<string:cart_id>", expected_exceptions=CartNotFound)
+    def rename_cart(self, request, cart_id):
+        schema = RenameCartSchema(strict=True)
+
+        try:
+            name_data = schema.loads(request.get_data(as_text=True)).data
+        except ValueError:
+            raise BadRequest("Invalid input")
+
+        serialized_data = RenameCartSchema().dump(name_data).data
+        self.carts_rpc.rename_cart(
+            cart_id,
+            serialized_data['name']
         )
 
         return 'success'

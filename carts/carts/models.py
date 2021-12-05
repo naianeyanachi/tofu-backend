@@ -39,7 +39,7 @@ class Cart(DeclarativeBase):
         nullable=False
     )
     name = Column(String)
-    cart_items = relationship("CartItem")
+    cart_items = relationship("CartItem", cascade="delete")
 
 
 class Category(DeclarativeBase):
