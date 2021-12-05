@@ -66,7 +66,8 @@ class GatewayService(object):
 
         serialized_data = CreateCartSchema().dump(cart_data).data
         result = self.carts_rpc.create_cart(
-            serialized_data['user_id']
+            serialized_data['user_id'],
+            serialized_data['name']
         )
         return Response(
             json.dumps({'id': result['id']}),
