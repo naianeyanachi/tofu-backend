@@ -38,6 +38,7 @@ class Cart(DeclarativeBase):
         ForeignKey("users.id", name="fk_user_id_carts"),
         nullable=False
     )
+    name = Column(String)
     cart_items = relationship("CartItem")
 
 

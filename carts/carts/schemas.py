@@ -41,4 +41,5 @@ class CartItemSchema(Schema):
 class CartSchema(Schema):
     id = fields.Str(required=True)
     user_id = fields.Str(required=True)
+    name = fields.Str(required=True)
     cart_items = fields.Nested(CartItemSchema, many=True)

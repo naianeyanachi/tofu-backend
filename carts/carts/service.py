@@ -81,8 +81,8 @@ class CartsService:
         self.db.commit()
 
     @rpc
-    def create_cart(self, user_id):
-        cart = Cart(id=generate(), user_id=user_id)
+    def create_cart(self, user_id, name):
+        cart = Cart(id=generate(), user_id=user_id, name=name)
 
         self.db.add(cart)
         self.db.commit()
