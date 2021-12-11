@@ -98,5 +98,5 @@ class SearchService:
 
     @rpc
     def get_search_history_by_user(self, user_id):
-        searches = self.db.query(Search).join(Search.cart).filter(Cart.user_id == user_id).all()
+        searches = self.db.query(Search).join(Search.cart).filter(Cart.user_id == user_id).order_by(Search.created_at.desc()).all()
         return SearchSchema(many=True).dump(searches).data
