@@ -156,7 +156,7 @@ class GatewayService(object):
             mimetype='application/json'
         )
     
-    @http("GET", "/search/<string:search_id>")
+    @http("POST", "/search/<string:search_id>")
     def search_again(self, _, search_id):
         result = self.search_rpc.search_again(search_id)
         return Response(
