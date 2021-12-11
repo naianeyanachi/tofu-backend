@@ -12,7 +12,14 @@ class Markets:
         result = {}
         for market in self.markets:
             result[market.name] = {}
+            market_returned = False
             for category in categories:
-                result[market.name][category] = market.search(category)
+                try:
+                    result[market.name][category] = market.search(category)
+                    market_returned = True
+                except:
+                    pass
+            if not market_returned:
+                del result[market.name]
         return result
                 
