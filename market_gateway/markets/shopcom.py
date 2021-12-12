@@ -16,10 +16,8 @@ class Shopcom:
     }
 
     def search(self, category):
-        site = self.get_site()
-        locale = self.get_locale(site)
         term = self.mapping.get_term_from_category(category)
-        products = self.get_products(site, locale, term)
+        products = self.get_products(term)
         return self.mapping.normalize_response(products)
     
     def get_site(self):
@@ -30,12 +28,12 @@ class Shopcom:
         response = requests.get(f'{self.base_url}/sites/{site}/locales', headers=self.headers)
         return response.json()['locales'][0]
 
-    def get_products(self, site, locale, term):
+    def get_products(self, term):
         params = {
             'publisherId': 'TEST',
             'categoryId': '1-32806',
-            'locale': locale,
-            'site': site,
+            'locale': 'en_US',
+            'site': 'shop',
             'term': term,
         }
         query_params = urllib.parse.urlencode(params)

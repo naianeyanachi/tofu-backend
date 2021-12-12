@@ -6,7 +6,7 @@ class GroceryBearMapping:
     def get_product_from_category(self, category):
         # eggs, milk, bread, orange juice (oj), rice, steak, or butter
         mapping = {
-            'ovo': 'eggs',
+            'ovos': 'eggs',
             'leite': 'milk',
             'pão': 'bread',
             'suco': 'orange juice (oj)',

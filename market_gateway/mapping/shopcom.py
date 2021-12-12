@@ -5,9 +5,13 @@ class ShopcomMapping:
 
     def get_term_from_category(self, category):
         mapping = {
-            'chocolate': 'chocolate',
-            'salgadinho': 'chips',
-            'leite condensado': 'condensed milk'
+            'ovos': 'eggs',
+            'leite': 'milk',
+            'pão': 'bread',
+            'suco': 'juice',
+            'arroz': 'rice',
+            'carne': 'steak',
+            'manteiga': 'butter',
         }
         try:
             product = mapping[category]
