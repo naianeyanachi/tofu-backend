@@ -10,18 +10,18 @@ from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
 from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
                              CreateCartSchema, ProductSchema, RemoveProductsSchema,
-                             SearchSchema, SearchHistorySchema, RenameCartSchema)
+                             SearchSchema, SearchHistorySchema, RenameCartSchema,
+                             CreateAddressSchema, CreatePasswordUserSchema, UserSchema)
 
 
 class GatewayService(object):
-    """
-    Service acts as a gateway to other services over http.
-    """
-
     name = 'gateway'
 
     carts_rpc = RpcProxy('carts')
     search_rpc = RpcProxy('search')
+    users_rpc = RpcProxy('users')
+
+    # CARTS SERVICE ------------------------------------------------------------------------
 
     @http("GET", "/cart/<string:cart_id>", expected_exceptions=CartNotFound)
     def get_cart(self, _, cart_id):
@@ -137,6 +137,8 @@ class GatewayService(object):
 
         return 'success'
 
+    # SEARCH SERVICE ------------------------------------------------------------------------
+
     @http("POST", "/search", expected_exceptions=(ValidationError, BadRequest))
     def search(self, request):
         schema = SearchSchema(strict=True)
@@ -172,3 +174,50 @@ class GatewayService(object):
             mimetype='application/json'
         )
 
+    # USERS SERVICE -------------------------------------------------------------------------
+
+    @http("POST", "/user")
+    def create_user_by_password(self, request):
+        schema = CreatePasswordUserSchema(strict=True)
+
+        try:
+            user_data = schema.loads(request.get_data(as_text=True)).data
+        except ValueError:
+            raise BadRequest("Invalid input")
+
+        serialized_data = CreatePasswordUserSchema().dump(user_data).data
+        result = self.users_rpc.create_user_by_password(
+            serialized_data
+        )
+        return Response(
+            json.dumps(result),
+            mimetype='application/json'
+        )
+    
+    
+    @http("POST", "/user/<string:user_id>/address")
+    def create_address(self, request, user_id):
+        schema = CreateAddressSchema(strict=True)
+
+        try:
+            address_data = schema.loads(request.get_data(as_text=True)).data
+        except ValueError:
+            raise BadRequest("Invalid input")
+
+        serialized_data = CreateAddressSchema().dump(address_data).data
+        result = self.users_rpc.create_address(
+            user_id,
+            serialized_data
+        )
+        return Response(
+            json.dumps(result),
+            mimetype='application/json'
+        )
+
+    @http("GET", "/user/<string:user_id>")
+    def get_user(self, _, user_id):
+        result = self.users_rpc.get_user(user_id)
+        return Response(
+            UserSchema().dumps(result).data,
+            mimetype='application/json'
+        )

@@ -20,7 +20,6 @@ def upgrade():
     op.create_table(
         "users",
         sa.Column("id", sa.String(), nullable=False),
-        sa.Column("name", sa.String(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id"),

@@ -112,3 +112,38 @@ services:
     build:
       context: ./market_gateway
       dockerfile: Dockerfile
+
+  users-postgres:
+    container_name: tofu-users-postgres
+    image: postgres
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: "tofu_user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "postgres"
+    restart: always
+
+  users:
+    container_name: tofu-users
+    depends_on:
+      - rabbit
+      - users-postgres
+    ports:
+      - "8004:8000"
+    links:
+      - "rabbit:tofu-rabbitmq"
+      - "users-postgres:tofu-users-postgres"
+    environment:
+      DB_PASSWORD: "password"
+      DB_USER: "postgres"
+      DB_HOST: "users-postgres"
+      DB_NAME: "tofu_user"
+      RABBIT_PASSWORD: "guest"
+      RABBIT_USER: "guest"
+      RABBIT_HOST: "rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
+    build:
+      context: ./users
+      dockerfile: Dockerfile

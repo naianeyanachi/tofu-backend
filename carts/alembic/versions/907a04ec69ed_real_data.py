@@ -38,9 +38,43 @@ metadata_values_table = table('metadata_values',
     column('created_at', DateTime),
     column('updated_at', DateTime),
 )
+metadata_fields_table = table('metadata_fields',
+    column('id', Integer),
+    column('field', String),
+    column('created_at', DateTime),
+    column('updated_at', DateTime),
+)
 
 
 def upgrade():
+    op.bulk_insert(metadata_fields_table,
+        [
+            {
+                'id': 'size',
+                'field': 'size',
+                'created_at': datetime.datetime.utcnow(),
+                'updated_at': datetime.datetime.utcnow()
+            },
+            {
+                'id': 'brand',
+                'field': 'brand',
+                'created_at': datetime.datetime.utcnow(),
+                'updated_at': datetime.datetime.utcnow()
+            },
+            {
+                'id': 'color',
+                'field': 'color',
+                'created_at': datetime.datetime.utcnow(),
+                'updated_at': datetime.datetime.utcnow()
+            },
+            {
+                'id': 'flavor',
+                'field': 'flavor',
+                'created_at': datetime.datetime.utcnow(),
+                'updated_at': datetime.datetime.utcnow()
+            },
+        ]
+    )
     op.bulk_insert(categories_table,
         [
             {
