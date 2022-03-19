@@ -2,9 +2,9 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='tofu-carts',
+    name='tofu-admin-carts',
     version='0.0.1',
-    description='Carts',
+    description='Admin carts',
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=[
         'nameko==v3.0.0-rc6',

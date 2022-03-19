@@ -20,8 +20,6 @@ COPY --from=install /appenv /appenv
 
 COPY config.yml /var/nameko/config.yml
 COPY run.sh /var/nameko/run.sh
-COPY alembic.ini /var/nameko/alembic.ini
-ADD alembic /var/nameko/alembic
 
 RUN chmod +x /var/nameko/run.sh
 

@@ -1,12 +1,12 @@
 {
   "rabbit_version": "3.7",
   "users": [
-   {
-    "name": "tofu",
-    "password_hash": "tIzpwWCmmeYRluGFrtSwk7hrJRj4+K0XuDlLJQWWiYCq6XaU",
-    "hashing_algorithm": "rabbit_password_hashing_sha256",
-    "tags": "administrator"
-   }
+    {
+      "name": "tofu-admin",
+      "password_hash": "DGHSE6LEDrF7ID0VNKbO2LvldFgumAYvYq5b+fslyeIuECWT",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
   ],
   "vhosts": [
    {
@@ -15,7 +15,7 @@
   ],
   "permissions": [
    {
-    "user": "tofu",
+    "user": "tofu-admin",
     "vhost": "\/",
     "configure": ".*",
     "write": ".*",

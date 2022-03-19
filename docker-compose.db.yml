@@ -1,0 +1,34 @@
+version: "2"
+services:
+  carts-postgres:
+    container_name: tofu-carts-postgres
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: "tofu_cart"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "postgres"
+    restart: always
+
+  search-postgres:
+    container_name: tofu-search-postgres
+    image: postgres
+    ports:
+        - "5434:5432"
+    environment:
+        POSTGRES_DB: "tofu_search"
+        POSTGRES_PASSWORD: "password"
+        POSTGRES_USER: "postgres"
+    restart: always
+
+  users-postgres:
+    container_name: tofu-users-postgres
+    image: postgres
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: "tofu_user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "postgres"
+    restart: always

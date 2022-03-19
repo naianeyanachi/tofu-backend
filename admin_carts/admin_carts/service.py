@@ -4,14 +4,14 @@ from nameko.rpc import rpc
 from nameko_sqlalchemy import DatabaseSession
 from nanoid import generate
 
-from carts.exceptions import NotFound
-from carts.models import Cart, CartItem, Category, DeclarativeBase, Product
-from carts.schemas import (CartItemSchema, CartSchema, CategorySchema,
+from admin_carts.exceptions import NotFound
+from admin_carts.models import Cart, CartItem, Category, DeclarativeBase, Product
+from admin_carts.schemas import (CartItemSchema, CartSchema, CategorySchema,
                            ProductSchema)
 
 
-class CartsService:
-    name = 'carts'
+class AdminCartsService:
+    name = 'admin_carts'
 
     db = DatabaseSession(DeclarativeBase)
 

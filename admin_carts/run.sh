@@ -13,4 +13,4 @@ alembic upgrade head
 
 # Run Service
 
-nameko run --config config.yml carts.service --backdoor 3000
+nameko run --config config.yml admin_carts.service --backdoor 3000

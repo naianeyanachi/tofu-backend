@@ -7,10 +7,6 @@ until nc -z ${RABBIT_HOST} ${RABBIT_PORT}; do
     sleep 2
 done
 
-# Run Migrations
-
-alembic upgrade head
-
 # Run Service
 
 nameko run --config config.yml carts.service --backdoor 3000

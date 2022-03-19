@@ -1,0 +1,54 @@
+version: "2"
+services:
+  admin-rabbit:
+    container_name: tofu-admin-rabbitmq
+    ports:
+      - "15674:15672"
+      - "5674:5672"
+      - "1885:1883"
+    restart: always
+    build:
+      context: ./admin_rabbit
+      dockerfile: Dockerfile
+
+  admin-gateway:
+    container_name: tofu-admin-gateway
+    depends_on:
+      - admin-rabbit
+    ports:
+      - "8100:8000"
+    links:
+      - "admin-rabbit:tofu-admin-rabbitmq"
+    environment:
+      RABBIT_PASSWORD: "tofu-admin"
+      RABBIT_USER: "tofu-admin"
+      RABBIT_HOST: "admin-rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
+    build:
+      context: ./admin_gateway
+      dockerfile: Dockerfile
+  
+  admin-carts:
+    container_name: tofu-admin-carts
+    depends_on:
+      - admin-rabbit
+      - carts-postgres
+    ports:
+      - "8101:8000"
+    links:
+      - "admin-rabbit:tofu-admin-rabbitmq"
+      - "carts-postgres:tofu-carts-postgres"
+    environment:
+      DB_PASSWORD: "password"
+      DB_USER: "postgres"
+      DB_HOST: "carts-postgres"
+      DB_NAME: "tofu_cart"
+      RABBIT_PASSWORD: "tofu-admin"
+      RABBIT_USER: "tofu-admin"
+      RABBIT_HOST: "admin-rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_MANAGEMENT_PORT: "15672"
+    build:
+      context: ./admin_carts
+      dockerfile: Dockerfile

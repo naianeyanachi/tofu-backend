@@ -5,7 +5,7 @@ from nameko.exceptions import BadRequest, safe_for_serialization
 from nameko.web.handlers import HttpRequestHandler
 from werkzeug import Response
 
-from gateway.exceptions import CartNotFound
+from admin_gateway.exceptions import CartNotFound
 
 
 class HttpEntrypoint(HttpRequestHandler):
