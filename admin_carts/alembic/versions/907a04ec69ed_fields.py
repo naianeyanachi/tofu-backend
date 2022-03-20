@@ -21,7 +21,7 @@ from nanoid import generate
 
 metadata_fields_table = table('metadata_fields',
     column('id', Integer),
-    column('field', String),
+    column('name', String),
     column('created_at', DateTime),
     column('updated_at', DateTime),
 )
@@ -32,25 +32,25 @@ def upgrade():
         [
             {
                 'id': generate(),
-                'field': 'size',
+                'name': 'size',
                 'created_at': datetime.datetime.utcnow(),
                 'updated_at': datetime.datetime.utcnow()
             },
             {
                 'id': generate(),
-                'field': 'brand',
+                'name': 'brand',
                 'created_at': datetime.datetime.utcnow(),
                 'updated_at': datetime.datetime.utcnow()
             },
             {
                 'id': generate(),
-                'field': 'flavor',
+                'name': 'flavor',
                 'created_at': datetime.datetime.utcnow(),
                 'updated_at': datetime.datetime.utcnow()
             },
             {
                 'id': generate(),
-                'field': 'weight',
+                'name': 'weight',
                 'created_at': datetime.datetime.utcnow(),
                 'updated_at': datetime.datetime.utcnow()
             },

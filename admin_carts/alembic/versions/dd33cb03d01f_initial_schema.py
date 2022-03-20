@@ -39,28 +39,54 @@ def upgrade():
     op.create_table(
         'sectors',
         sa.Column('id', sa.String(), nullable=False),
-        sa.Column('department_id', sa.String(), nullable=False),
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
-        sa.ForeignKeyConstraint(
-            ['department_id'], ['departments.id'],
-            name='fk_department_id_sectors'
-        ),
     )
 
     op.create_table(
         'categories',
         sa.Column('id', sa.String(), nullable=False),
-        sa.Column('sector_id', sa.String(), nullable=False),
         sa.Column('name', sa.String(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint('id'),
+    )
+
+    op.create_table(
+        'category_sector',
+        sa.Column('id', sa.String(), nullable=False),
+        sa.Column('sector_id', sa.String(), nullable=False),
+        sa.Column('category_id', sa.String(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.ForeignKeyConstraint(
             ['sector_id'], ['sectors.id'],
-            name='fk_sector_id_categories'
+            name='fk_sector_id_category_sector'
+        ),
+        sa.ForeignKeyConstraint(
+            ['category_id'], ['categories.id'],
+            name='fk_category_id_category_sector'
+        ),
+    )
+
+    op.create_table(
+        'sector_department',
+        sa.Column('id', sa.String(), nullable=False),
+        sa.Column('sector_id', sa.String(), nullable=False),
+        sa.Column('department_id', sa.String(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint('id'),
+        sa.ForeignKeyConstraint(
+            ['sector_id'], ['sectors.id'],
+            name='fk_sector_id_sector_department'
+        ),
+        sa.ForeignKeyConstraint(
+            ['department_id'], ['departments.id'],
+            name='fk_department_id_sector_department'
         ),
     )
 
@@ -101,7 +127,7 @@ def upgrade():
     op.create_table(
         'metadata_fields',
         sa.Column('id', sa.String(), nullable=False),
-        sa.Column('field', sa.String(), nullable=False),
+        sa.Column('name', sa.String(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id')
@@ -136,6 +162,8 @@ def downgrade():
     op.drop_table('metadata_fields')
     op.drop_table('cart_items')
     op.drop_table('products')
+    op.drop_table('sector_department')
+    op.drop_table('category_sector')
     op.drop_table('categories')
     op.drop_table('sectors')
     op.drop_table('departments')

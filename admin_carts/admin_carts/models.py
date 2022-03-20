@@ -22,13 +22,6 @@ class Base(object):
 DeclarativeBase = declarative_base(cls=Base)
 
 
-class User(DeclarativeBase):
-    __tablename__ = "users"
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
-
-
 class Cart(DeclarativeBase):
     __tablename__ = "carts"
 
