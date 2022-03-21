@@ -1,8 +1,6 @@
-import json
 import logging
 
 from nameko.rpc import rpc
-from werkzeug import Response
 
 from markets.markets import Markets
 
@@ -15,4 +13,3 @@ class MarketGatewayService(object):
     @rpc
     def search_by_categories(self, categories):
         return self.markets.search_all(categories)
-

@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import DECIMAL, Column, DateTime, ForeignKey, String, Table
+from sqlalchemy import DECIMAL, Column, DateTime, ForeignKey, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -42,6 +42,7 @@ class SectorDepartment(DeclarativeBase):
     department_id = Column(ForeignKey('departments.id', name='fk_department_id_sector_department'))
     department = relationship("Department", back_populates="sectors")
     sector = relationship("Sector", back_populates="departments")
+
 
 class CategorySector(DeclarativeBase):
     __tablename__ = 'category_sector'

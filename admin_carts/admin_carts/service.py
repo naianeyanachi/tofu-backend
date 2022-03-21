@@ -5,7 +5,8 @@ from nameko_sqlalchemy import DatabaseSession
 from nanoid import generate
 
 from admin_carts.exceptions import NotFound
-from admin_carts.models import DeclarativeBase, Department, Sector, SectorDepartment, CategorySector, Category
+from admin_carts.models import (Category, CategorySector, DeclarativeBase,
+                                Department, Sector, SectorDepartment)
 from admin_carts.schemas import DepartmentSchema
 
 
@@ -33,7 +34,7 @@ class AdminCartsService:
             Category.id == CategorySector.category_id,
             isouter=True
         ).all()
-        
+
         if not department:
             raise NotFound('Cart not found')
 

@@ -7,8 +7,8 @@ Create Date: 2021-07-23 13:51:31.034548
 """
 
 import sqlalchemy as sa
-from sqlalchemy.sql import column, table
 from alembic import op
+from sqlalchemy.sql import column, table
 
 # revision identifiers, used by Alembic.
 revision = 'dd33cb03d01f'
@@ -26,11 +26,13 @@ def upgrade():
         sa.PrimaryKeyConstraint("id"),
     )
 
-    authentication_table = table('authentication',
+    authentication_table = table(
+        'authentication',
         column('id', sa.Integer),
         column('type', sa.String),
     )
-    op.bulk_insert(authentication_table,
+    op.bulk_insert(
+        authentication_table,
         [
             {
                 'id': 1,
@@ -67,7 +69,7 @@ def upgrade():
             name="fk_authentication_id_users"
         ),
     )
-    
+
     op.create_table(
         "addresses",
         sa.Column("id", sa.String(), nullable=False),
@@ -87,7 +89,6 @@ def upgrade():
             name="fk_user_id_addresses"
         ),
     )
-
 
 
 def downgrade():

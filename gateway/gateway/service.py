@@ -9,9 +9,10 @@ from werkzeug import Response
 from gateway.entrypoints import http
 from gateway.exceptions import CartNotFound
 from gateway.schemas import (AddProductsSchema, CartSchema, CategorySchema,
-                             CreateCartSchema, ProductSchema, RemoveProductsSchema,
-                             SearchSchema, SearchHistorySchema, RenameCartSchema,
-                             CreateAddressSchema, CreatePasswordUserSchema, UserSchema)
+                             CreateAddressSchema, CreateCartSchema,
+                             CreatePasswordUserSchema, ProductSchema,
+                             RemoveProductsSchema, RenameCartSchema,
+                             SearchHistorySchema, SearchSchema, UserSchema)
 
 
 class GatewayService(object):
@@ -74,7 +75,7 @@ class GatewayService(object):
             mimetype='application/json'
         )
 
-    @http("POST", "/cart/<string:cart_id>/products", expected_exceptions=(ValidationError, BadRequest))
+    @http("POST", "/cart/<string:cart_id>/products", expected_exceptions=(BadRequest))
     def add_products_to_cart(self, request, cart_id):
         schema = AddProductsSchema(strict=True)
 
@@ -157,7 +158,7 @@ class GatewayService(object):
             json.dumps(result),
             mimetype='application/json'
         )
-    
+
     @http("POST", "/search/<string:search_id>")
     def search_again(self, _, search_id):
         result = self.search_rpc.search_again(search_id)
@@ -165,7 +166,7 @@ class GatewayService(object):
             json.dumps(result),
             mimetype='application/json'
         )
-    
+
     @http("GET", "/user/<string:user_id>/history")
     def get_search_history_by_user(self, _, user_id):
         searches = self.search_rpc.get_search_history_by_user(user_id)
@@ -193,8 +194,7 @@ class GatewayService(object):
             json.dumps(result),
             mimetype='application/json'
         )
-    
-    
+
     @http("POST", "/user/<string:user_id>/address")
     def create_address(self, request, user_id):
         schema = CreateAddressSchema(strict=True)

@@ -126,4 +126,3 @@ class UserSchema(Schema):
 
     authentication = fields.Nested(AuthenticationSchema)
     addresses = fields.Nested(AddressSchema, many=True)
-

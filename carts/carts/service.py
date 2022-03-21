@@ -44,14 +44,28 @@ class CartsService:
 
     @rpc
     def remove_products_from_cart_by_category(self, cart_id, category_id):
-        cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).filter(Product.category_id == category_id).all()
+        cart_items = self.db.query(
+            CartItem
+        ).join(
+            CartItem.product
+        ).filter(
+            CartItem.cart_id == cart_id
+        ).filter(
+            Product.category_id == category_id
+        ).all()
         for cart_item in cart_items:
             self.db.delete(cart_item)
         self.db.commit()
 
     @rpc
     def remove_all_products_from_cart(self, cart_id):
-        cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).all()
+        cart_items = self.db.query(
+            CartItem
+        ).join(
+            CartItem.product
+        ).filter(
+            CartItem.cart_id == cart_id
+        ).all()
         for cart_item in cart_items:
             self.db.delete(cart_item)
         self.db.commit()

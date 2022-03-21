@@ -15,11 +15,12 @@ depends_on = None
 import datetime
 
 from alembic import op
-from sqlalchemy import DECIMAL, DateTime, Integer, String
-from sqlalchemy.sql import column, table
 from nanoid import generate
+from sqlalchemy import DateTime, Integer, String
+from sqlalchemy.sql import column, table
 
-metadata_fields_table = table('metadata_fields',
+metadata_fields_table = table(
+    'metadata_fields',
     column('id', Integer),
     column('name', String),
     column('created_at', DateTime),
@@ -28,7 +29,8 @@ metadata_fields_table = table('metadata_fields',
 
 
 def upgrade():
-    op.bulk_insert(metadata_fields_table,
+    op.bulk_insert(
+        metadata_fields_table,
         [
             {
                 'id': generate(),

@@ -1,7 +1,7 @@
 """initial schema
 
 Revision ID: add14a4956c7
-Revises: 
+Revises:
 Create Date: 2021-08-07 23:27:33.645355
 
 """
@@ -12,8 +12,8 @@ down_revision = None
 branch_labels = None
 depends_on = None
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 
 def upgrade():
@@ -53,6 +53,7 @@ def upgrade():
             name="fk_cart_id_cart_items"
         ),
     )
+
 
 def downgrade():
     op.drop_table("cart_items")

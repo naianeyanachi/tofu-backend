@@ -1,4 +1,3 @@
-import json
 import logging
 
 from marshmallow import ValidationError
@@ -7,8 +6,9 @@ from nameko.rpc import RpcProxy
 from werkzeug import Response
 
 from admin_gateway.entrypoints import http
-from admin_gateway.exceptions import CartNotFound
-from admin_gateway.schemas import DepartmentSchema, BulkCreateDepartments, BulkCreateSectors, BulkCreateCategories
+# from admin_gateway.exceptions import CartNotFound
+from admin_gateway.schemas import (BulkCreateCategories, BulkCreateDepartments,
+                                   BulkCreateSectors, DepartmentSchema)
 
 
 class AdminGatewayService(object):
@@ -36,7 +36,7 @@ class AdminGatewayService(object):
             raise BadRequest("Invalid input")
 
         serialized_data = BulkCreateDepartments().dump(departments_data).data
-        
+
         result = self.admin_carts_rpc.bulk_create_departments(serialized_data['names'])
         return Response(
             DepartmentSchema(many=True).dumps(result).data,
@@ -53,7 +53,7 @@ class AdminGatewayService(object):
             raise BadRequest("Invalid input")
 
         serialized_data = BulkCreateSectors().dump(sectors_data).data
-        
+
         result = self.admin_carts_rpc.bulk_create_sectors(
             serialized_data['department_id'],
             serialized_data['names']
@@ -73,7 +73,7 @@ class AdminGatewayService(object):
             raise BadRequest("Invalid input")
 
         serialized_data = BulkCreateCategories().dump(categories_data).data
-        
+
         result = self.admin_carts_rpc.bulk_create_categories(
             serialized_data['sector_id'],
             serialized_data['names']

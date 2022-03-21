@@ -1,19 +1,20 @@
 import logging
 
-from nameko.rpc import rpc, RpcProxy
+from nameko.rpc import RpcProxy, rpc
 from nameko_sqlalchemy import DatabaseSession
 from nanoid import generate
 
 from search.exceptions import NotFound
-from search.schemas import SearchSchema, CartItemSchema, CartSchema
-from search.models import DeclarativeBase, CartItem, Cart, Search, MetadataField, MetadataValue, Product, Category
+from search.models import (Cart, CartItem, Category, DeclarativeBase,
+                           MetadataField, MetadataValue, Product, Search)
+from search.schemas import SearchSchema
 
 
 class SearchService:
     name = 'search'
 
     market_gateway_rpc = RpcProxy('market_gateway')
-    
+
     db = DatabaseSession(DeclarativeBase)
 
     def get_categories_and_cart(self, cart_id, user_id, cart_items):
@@ -84,7 +85,7 @@ class SearchService:
 
         if not search:
             raise NotFound('Search not found')
-        
+
         search = SearchSchema().dump(search).data
         cart_id = search['cart']['id']
         user_id = search['cart']['user_id']
@@ -98,5 +99,13 @@ class SearchService:
 
     @rpc
     def get_search_history_by_user(self, user_id):
-        searches = self.db.query(Search).join(Search.cart).filter(Cart.user_id == user_id).order_by(Search.created_at.desc()).all()
+        searches = self.db.query(
+            Search
+        ).join(
+            Search.cart
+        ).filter(
+            Cart.user_id == user_id
+        ).order_by(
+            Search.created_at.desc()
+        ).all()
         return SearchSchema(many=True).dump(searches).data

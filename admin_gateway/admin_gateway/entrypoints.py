@@ -39,7 +39,7 @@ class HttpEntrypoint(HttpRequestHandler):
                 'Access-Control-Allow-Origin': '*'
             }
         )
-    
+
     def response_from_result(self, *args, **kwargs):
         response = super(HttpEntrypoint, self).response_from_result(*args, **kwargs)
         response.headers.add('Access-Control-Allow-Origin', '*')  # or whatever

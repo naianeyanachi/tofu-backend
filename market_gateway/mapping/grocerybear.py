@@ -1,6 +1,7 @@
 import logging
 import random
 
+
 class GroceryBearMapping:
 
     def get_product_from_category(self, category):
@@ -16,7 +17,7 @@ class GroceryBearMapping:
         }
         try:
             product = mapping[category]
-        except KeyError: 
+        except KeyError:
             product = random.choice(list(mapping.values()))
         return product
 

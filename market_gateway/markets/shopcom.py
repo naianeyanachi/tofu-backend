@@ -1,8 +1,10 @@
-import requests
 import logging
 import urllib
 
+import requests
+
 from mapping.shopcom import ShopcomMapping
+
 
 class Shopcom:
     name = 'shop.com'
@@ -19,11 +21,11 @@ class Shopcom:
         term = self.mapping.get_term_from_category(category)
         products = self.get_products(term)
         return self.mapping.normalize_response(products)
-    
+
     def get_site(self):
         response = requests.get(f'{self.base_url}/sites', headers=self.headers)
         return response.json()['sites'][0]
-    
+
     def get_locale(self, site):
         response = requests.get(f'{self.base_url}/sites/{site}/locales', headers=self.headers)
         return response.json()['locales'][0]

@@ -1,21 +1,17 @@
-#!/usr/bin/env python
-# details on rabbitMQ password hashing 
-# https://www.rabbitmq.com/passwords.html#computing-password-hash
-
 from __future__ import print_function
+
 import base64
-import os
-import hashlib
-import struct
 import getpass
+import hashlib
+import os
 
 # This is the password we wish to encode
 password1 = getpass.getpass("password: ")
 password2 = getpass.getpass("again: ")
 
 if password1 != password2:
-  print("passwords do not match")
-  exit(1)
+    print("passwords do not match")
+    exit(1)
 
 # 1.Generate a random 32 bit salt:
 # This will generate 32 bits of random data:

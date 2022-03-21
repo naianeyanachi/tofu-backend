@@ -1,6 +1,7 @@
 import logging
 import random
 
+
 class ShopcomMapping:
 
     def get_term_from_category(self, category):
@@ -15,10 +16,10 @@ class ShopcomMapping:
         }
         try:
             product = mapping[category]
-        except KeyError: 
+        except KeyError:
             product = random.choice(list(mapping.values()))
         return product
-    
+
     def normalize_response(self, response):
         normalized = []
         for product in response:

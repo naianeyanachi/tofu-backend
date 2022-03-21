@@ -7,7 +7,7 @@ class Markets:
         GroceryBear(),
         Shopcom(),
     ]
-    
+
     def search_all(self, categories):
         result = {}
         for market in self.markets:
@@ -17,9 +17,8 @@ class Markets:
                 try:
                     result[market.name][category] = market.search(category)
                     market_returned = True
-                except:
+                except Exception:
                     pass
             if not market_returned:
                 del result[market.name]
         return result
-                

@@ -24,5 +24,3 @@ class UserSchema(Schema):
     phone = fields.Str(required=False)
 
     addresses = fields.Nested(AddressSchema, many=True)
-
-

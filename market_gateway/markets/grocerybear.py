@@ -1,7 +1,9 @@
-import requests
 import logging
 
+import requests
+
 from mapping.grocerybear import GroceryBearMapping
+
 
 class GroceryBear:
     name = 'grocerybear'

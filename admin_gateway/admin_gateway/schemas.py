@@ -72,12 +72,15 @@ class CartSchema(Schema):
     name = fields.Str(required=True)
     cart_items = fields.Nested(CartItemSchema, many=True)
 
+
 class BulkCreateDepartments(Schema):
     names = fields.List(fields.Str(), required=True)
+
 
 class BulkCreateSectors(Schema):
     department_id = fields.Str(required=True)
     names = fields.List(fields.Str(), required=True)
+
 
 class BulkCreateCategories(Schema):
     sector_id = fields.Str(required=True)
