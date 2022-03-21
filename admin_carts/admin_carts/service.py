@@ -5,9 +5,8 @@ from nameko_sqlalchemy import DatabaseSession
 from nanoid import generate
 
 from admin_carts.exceptions import NotFound
-from admin_carts.models import Cart, CartItem, Category, DeclarativeBase, Product
-from admin_carts.schemas import (CartItemSchema, CartSchema, CategorySchema,
-                           ProductSchema)
+from admin_carts.models import DeclarativeBase, Department, Sector, SectorDepartment, CategorySector, Category
+from admin_carts.schemas import DepartmentSchema
 
 
 class AdminCartsService:
@@ -16,92 +15,73 @@ class AdminCartsService:
     db = DatabaseSession(DeclarativeBase)
 
     @rpc
-    def get_cart(self, cart_id):
-        cart = self.db.query(Cart).get(cart_id)
-
-        if not cart:
+    def get_all_departments(self):
+        department = self.db.query(Department).join(
+            SectorDepartment,
+            SectorDepartment.department_id == Department.id,
+            isouter=True
+        ).join(
+            Sector,
+            Sector.id == SectorDepartment.sector_id,
+            isouter=True
+        ).join(
+            CategorySector,
+            CategorySector.sector_id == Sector.id,
+            isouter=True
+        ).join(
+            Category,
+            Category.id == CategorySector.category_id,
+            isouter=True
+        ).all()
+        
+        if not department:
             raise NotFound('Cart not found')
 
-        return CartSchema().dump(cart).data
+        return DepartmentSchema(many=True).dump(department).data
 
     @rpc
-    def add_products_to_cart(self, cart_id, category_id, product_ids, quantity):
-        self.remove_products_from_cart_by_category(cart_id, category_id)
-        cart_items = [
-            CartItem(
-                id=generate(),
-                cart_id=cart_id,
-                product_id=product_id['product_id'],
-                quantity=quantity
+    def bulk_create_departments(self, names):
+        for name in names:
+            department = Department(id=generate(), name=name)
+            self.db.add(department)
+        self.db.commit()
+
+        return self.get_all_departments()
+
+    @rpc
+    def bulk_create_sectors(self, department_id, names):
+        for name in names:
+            sector_id = generate()
+            sectors = Sector(
+                id=sector_id,
+                name=name
             )
-            for product_id in product_ids
-        ]
-        for cart_item in cart_items:
-            self.db.add(cart_item)
+            sector_department = SectorDepartment(
+                id=generate(),
+                department_id=department_id,
+                sector_id=sector_id
+            )
+            self.db.add(sectors)
+            self.db.add(sector_department)
         self.db.commit()
 
-        cart_items = CartItemSchema(many=True).dump(cart_items).data
+        return self.get_all_departments()
 
     @rpc
-    def remove_products_from_cart_by_category(self, cart_id, category_id):
-        cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).filter(Product.category_id == category_id).all()
-        for cart_item in cart_items:
-            self.db.delete(cart_item)
+    def bulk_create_categories(self, sector_id, names):
+        for name in names:
+            category_id = generate()
+            sectors = Category(
+                id=category_id,
+                name=name
+            )
+            category_sector = CategorySector(
+                id=generate(),
+                category_id=category_id,
+                sector_id=sector_id
+            )
+            self.db.add(sectors)
+            self.db.add(category_sector)
         self.db.commit()
 
-    @rpc
-    def remove_all_products_from_cart(self, cart_id):
-        cart_items = self.db.query(CartItem).join(CartItem.product).filter(CartItem.cart_id == cart_id).all()
-        for cart_item in cart_items:
-            self.db.delete(cart_item)
-        self.db.commit()
-
-    @rpc
-    def get_categories_by_term(self, term):
-        categories = self.db.query(Category).filter(Category.name.like(f'%{term}%')).all()
-
-        if not categories:
-            raise NotFound('Category not found')
-
-        return CategorySchema(many=True).dump(categories).data
-
-    @rpc
-    def get_products_by_category(self, category_id):
-        products = self.db.query(Product).filter(Product.category_id == category_id).all()
-
-        if not products:
-            raise NotFound(f'Product not found')
-
-        return ProductSchema(many=True).dump(products).data
-
-    @rpc
-    def rename_cart(self, cart_id, name):
-        cart = self.db.query(Cart).get(cart_id)
-        cart.name = name
-        self.db.commit()
-
-    @rpc
-    def delete_cart(self, cart_id):
-        cart = self.db.query(Cart).get(cart_id)
-        self.db.delete(cart)
-        self.db.commit()
-
-    @rpc
-    def create_cart(self, user_id, name):
-        cart = Cart(id=generate(), user_id=user_id, name=name)
-
-        self.db.add(cart)
-        self.db.commit()
-
-        cart = CartSchema().dump(cart).data
-
-        return cart
-
-    @rpc
-    def get_carts_by_user(self, user_id):
-        carts = self.db.query(Cart).filter(Cart.user_id == user_id).all()
-
-        if not carts:
-            raise NotFound('User not found')
-
-        return CartSchema(many=True).dump(carts).data
+        return self.get_all_departments()

@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import DECIMAL, Column, DateTime, ForeignKey, String
+from sqlalchemy import DECIMAL, Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -35,11 +35,46 @@ class Cart(DeclarativeBase):
     cart_items = relationship("CartItem", cascade="delete")
 
 
+class SectorDepartment(DeclarativeBase):
+    __tablename__ = 'sector_department'
+    id = Column(String, primary_key=True)
+    sector_id = Column(ForeignKey('sectors.id', name='fk_sector_id_sector_department'))
+    department_id = Column(ForeignKey('departments.id', name='fk_department_id_sector_department'))
+    department = relationship("Department", back_populates="sectors")
+    sector = relationship("Sector", back_populates="departments")
+
+class CategorySector(DeclarativeBase):
+    __tablename__ = 'category_sector'
+    id = Column(String, primary_key=True)
+    sector_id = Column(ForeignKey('sectors.id', name='fk_sector_id_category_sector'))
+    category_id = Column(ForeignKey('categories.id', name='fk_category_id_category_sector'))
+    category = relationship("Category", back_populates="sectors")
+    sector = relationship("Sector", back_populates="categories")
+
+
+class Department(DeclarativeBase):
+    __tablename__ = "departments"
+
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    sectors = relationship("SectorDepartment", back_populates="department")
+
+
+class Sector(DeclarativeBase):
+    __tablename__ = "sectors"
+
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    departments = relationship("SectorDepartment", back_populates="sector")
+    categories = relationship("CategorySector", back_populates="sector")
+
+
 class Category(DeclarativeBase):
     __tablename__ = "categories"
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
+    sectors = relationship("CategorySector", back_populates="category")
 
 
 class Product(DeclarativeBase):
@@ -71,6 +106,7 @@ class CartItem(DeclarativeBase):
     )
     quantity = Column(DECIMAL, nullable=False)
     product = relationship("Product", uselist=False)
+    cart = relationship("Cart", uselist=False)
 
 
 class MetadataField(DeclarativeBase):
