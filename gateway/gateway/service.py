@@ -56,6 +56,38 @@ class GatewayService(object):
             mimetype='application/json'
         )
 
+    @http("GET", "/sector/<string:sector_id>/products", expected_exceptions=CartNotFound)
+    def get_products_by_sector(self, _, sector_id):
+        product_collection = self.carts_rpc.get_products_by_sector(sector_id)
+        return Response(
+            ProductSchema(many=True).dumps(product_collection).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/department/<string:department_id>/products", expected_exceptions=CartNotFound)
+    def get_products_by_department(self, _, department_id):
+        product_collection = self.carts_rpc.get_products_by_department(department_id)
+        return Response(
+            ProductSchema(many=True).dumps(product_collection).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/sector/<string:sector_id>/categories", expected_exceptions=CartNotFound)
+    def get_categories_by_sector(self, _, sector_id):
+        categories = self.carts_rpc.get_categories_by_sector(sector_id)
+        return Response(
+            CategorySchema(many=True).dumps(categories).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/department/<string:department_id>/categories", expected_exceptions=CartNotFound)
+    def get_categories_by_department(self, _, department_id):
+        categories = self.carts_rpc.get_categories_by_department(department_id)
+        return Response(
+            CategorySchema(many=True).dumps(categories).data,
+            mimetype='application/json'
+        )
+
     @http("POST", "/cart", expected_exceptions=(ValidationError, BadRequest))
     def create_cart(self, request):
         schema = CreateCartSchema(strict=True)

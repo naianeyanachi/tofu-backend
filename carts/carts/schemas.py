@@ -23,9 +23,37 @@ class CategorySchema(Schema):
     name = fields.Str(required=True)
 
 
+class CategorySectorSchema(Schema):
+    id = fields.Str(required=True)
+    sector_id = fields.Str(required=True)
+    category_id = fields.Str(required=True)
+    category = fields.Nested(CategorySchema)
+
+
+class SectorSchema(Schema):
+    id = fields.Str(required=True)
+    name = fields.Str(required=True)
+    categories = fields.Nested(CategorySectorSchema, many=True)
+
+
+class SectorDepartmentSchema(Schema):
+    id = fields.Str(required=True)
+    sector_id = fields.Str(required=True)
+    department_id = fields.Str(required=True)
+    sector = fields.Nested(SectorSchema)
+
+
+class DepartmentSchema(Schema):
+    id = fields.Str(required=True)
+    name = fields.Str(required=True)
+    sectors = fields.Nested(SectorDepartmentSchema, many=True)
+
+
 class ProductSchema(Schema):
     id = fields.Str(required=True)
     category_id = fields.Str(required=True)
+    sku = fields.Str(required=True)
+    description = fields.Str(required=True)
     category = fields.Nested(CategorySchema)
     values = fields.Nested(MetadataValueSchema, many=True)
 
