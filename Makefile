@@ -21,6 +21,12 @@ test:
 
 coverage: test coverage-report coverage-html
 
+prettier:
+	flake8 .
+
+isort:
+	isort --recursive .
+
 # docker
 
 build-base:
