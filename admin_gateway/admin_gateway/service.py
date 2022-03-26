@@ -8,7 +8,7 @@ from werkzeug import Response
 from admin_gateway.entrypoints import http
 # from admin_gateway.exceptions import CartNotFound
 from admin_gateway.schemas import (BulkCreateCategories, BulkCreateDepartments,
-                                   BulkCreateSectors, DepartmentSchema)
+                                   BulkCreateSectors, DepartmentSchema, ProductSchema, BulkCreateProducts)
 
 
 class AdminGatewayService(object):
@@ -23,6 +23,14 @@ class AdminGatewayService(object):
         result = self.admin_carts_rpc.get_all_departments()
         return Response(
             DepartmentSchema(many=True).dumps(result).data,
+            mimetype='application/json'
+        )
+
+    @http("GET", "/category/<string:category_id>/products")
+    def get_products_by_category(self, _, category_id):
+        result = self.admin_carts_rpc.get_products_by_category(category_id)
+        return Response(
+            ProductSchema(many=True).dumps(result).data,
             mimetype='application/json'
         )
 
@@ -80,5 +88,25 @@ class AdminGatewayService(object):
         )
         return Response(
             DepartmentSchema(many=True).dumps(result).data,
+            mimetype='application/json'
+        )
+
+    @http("POST", "/products", expected_exceptions=(ValidationError, BadRequest))
+    def bulk_create_products(self, request):
+        schema = BulkCreateProducts(strict=True)
+
+        try:
+            products_data = schema.loads(request.get_data(as_text=True)).data
+        except ValueError:
+            raise BadRequest("Invalid input")
+
+        serialized_data = BulkCreateProducts().dump(products_data).data
+
+        result = self.admin_carts_rpc.bulk_create_products(
+            serialized_data['category_id'],
+            serialized_data['products']
+        )
+        return Response(
+            ProductSchema(many=True).dumps(result).data,
             mimetype='application/json'
         )

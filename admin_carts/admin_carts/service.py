@@ -6,8 +6,8 @@ from nanoid import generate
 
 from admin_carts.exceptions import NotFound
 from admin_carts.models import (Category, CategorySector, DeclarativeBase,
-                                Department, Sector, SectorDepartment)
-from admin_carts.schemas import DepartmentSchema
+                                Department, Sector, SectorDepartment, MetadataValue, Product)
+from admin_carts.schemas import DepartmentSchema, ProductSchema
 
 
 class AdminCartsService:
@@ -39,6 +39,15 @@ class AdminCartsService:
             raise NotFound('Cart not found')
 
         return DepartmentSchema(many=True).dump(department).data
+
+    @rpc
+    def get_products_by_category(self, category_id):
+        products = self.db.query(Product).filter(Product.category_id == category_id).all()
+
+        if not products:
+            raise NotFound('Products not found')
+
+        return ProductSchema(many=True).dump(products).data
 
     @rpc
     def bulk_create_departments(self, names):
@@ -86,3 +95,26 @@ class AdminCartsService:
         self.db.commit()
 
         return self.get_all_departments()
+
+    @rpc
+    def bulk_create_products(self, category_id, products):
+        for product in products:
+            product_id = generate()
+            insert_product = Product(
+                id=product_id,
+                category_id=category_id,
+                description=product['description'],
+                sku=product['sku']
+            )
+            self.db.add(insert_product)
+            for value in product['values']:
+                insert_value = MetadataValue(
+                    id=generate(),
+                    field_id=value['field_id'],
+                    product_id=product_id,
+                    value=value['value']
+                )
+                self.db.add(insert_value)
+        self.db.commit()
+
+        return self.get_products_by_category(category_id)

@@ -5,7 +5,7 @@ class MetadataFieldSchema(Schema):
     __tablename__ = "metadata_values"
 
     id = fields.Str(required=True)
-    field = fields.Str(required=True)
+    name = fields.Str(required=True)
 
 
 class MetadataValueSchema(Schema):
@@ -85,3 +85,19 @@ class BulkCreateSectors(Schema):
 class BulkCreateCategories(Schema):
     sector_id = fields.Str(required=True)
     names = fields.List(fields.Str(), required=True)
+
+
+class BulkCreateProductMetadataValueSchema(Schema):
+    field_id = fields.Str(required=True)
+    value = fields.Str(required=True)
+
+
+class BulkCreateProductSchema(Schema):
+    sku = fields.Str(required=True)
+    description = fields.Str(required=True)
+    values = fields.Nested(BulkCreateProductMetadataValueSchema, many=True)
+
+
+class BulkCreateProducts(Schema):
+    category_id = fields.Str(required=True)
+    products = fields.Nested(BulkCreateProductSchema, many=True)

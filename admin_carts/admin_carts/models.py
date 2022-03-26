@@ -82,6 +82,8 @@ class Product(DeclarativeBase):
     __tablename__ = "products"
 
     id = Column(String, primary_key=True)
+    sku = Column(String)
+    description = Column(String, nullable=False)
     category_id = Column(
         String,
         ForeignKey("categories.id", name="fk_category_id_products"),
@@ -114,7 +116,7 @@ class MetadataField(DeclarativeBase):
     __tablename__ = "metadata_fields"
 
     id = Column(String, primary_key=True)
-    field = Column(String, nullable=False)
+    name = Column(String, nullable=False)
 
 
 class MetadataValue(DeclarativeBase):

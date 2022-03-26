@@ -56,6 +56,12 @@ def upgrade():
                 'created_at': datetime.datetime.utcnow(),
                 'updated_at': datetime.datetime.utcnow()
             },
+            {
+                'id': generate(),
+                'name': 'type',
+                'created_at': datetime.datetime.utcnow(),
+                'updated_at': datetime.datetime.utcnow()
+            },
         ]
     )
 
