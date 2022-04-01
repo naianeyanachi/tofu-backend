@@ -5,7 +5,7 @@ class MetadataFieldSchema(Schema):
     __tablename__ = "metadata_values"
 
     id = fields.Str(required=True)
-    field = fields.Str(required=True)
+    name = fields.Str(required=True)
 
 
 class MetadataValueSchema(Schema):

@@ -46,6 +46,8 @@ class CategorySchema(Schema):
 
 class ProductSchema(Schema):
     id = fields.Str(required=True)
+    sku = fields.Str(required=True)
+    description = fields.Str(required=True)
     category = fields.Nested(CategorySchema)
     values = fields.Nested(MetadataValueSchema, many=True)
 
